@@ -34,3 +34,7 @@ void liberar_lista_id(ListaId_T* lista){
         free(aux);
     }
 }
+
+bool esta_lista_id_vacia(ListaId_T* lista){
+    return lista == NULL;
+}

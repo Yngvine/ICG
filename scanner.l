@@ -183,7 +183,8 @@ OP_COMPARADOR {COMP_IGUALDAD}|{COMP_DIFERENCIA}|{COMP_MENOR_IGUAL}|{COMP_MAYOR_I
 
 {COMENTARIO}                    {return TK_COMENTARIO;}
 
-{ID}                            {return TK_IDENTIFICADOR;}
+{ID}                            {yyval.paraCadena = strdup(yytext);
+                                 return TK_IDENTIFICADOR;}
 
 .                               {;}
 

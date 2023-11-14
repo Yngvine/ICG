@@ -119,13 +119,28 @@ lista_d_cte: TK_IDENTIFICADOR TK_CREACION_TIPO TK_LITERAL_BOOLEANO TK_SECUENCIAL
            | TK_IDENTIFICADOR TK_CREACION_TIPO TK_LITERAL_NUMERICO TK_SECUENCIAL lista_d_cte{;}
            | {;}
            ;
-lista_d_var: lista_id TK_DEFINICION_TIPO d_tipo TK_SECUENCIAL lista_d_var{;}
+lista_d_var: lista_id TK_DEFINICION_TIPO d_tipo TK_SECUENCIAL lista_d_var
+             {
+                ;
+             }
            | {;}
            ;
 
-lista_id: TK_IDENTIFICADOR TK_SEPARADOR lista_id{;}
-        | TK_IDENTIFICADOR {;}
-        ;
+lista_id: TK_IDENTIFICADOR TK_SEPARADOR lista_id
+        { 
+                if (esta_tabla_id_vacia($3)) { //es necesaria la comprobacion?
+                        inicializar_lista_id($3);
+                        anhadir_a_lista_id($1,$$);
+                } else {
+                        anhadir_a_lista_id($1,$3);
+                }
+                $$ = $3;
+        }
+        | TK_IDENTIFICADOR 
+        {
+                inicializar_lista_id($$);
+                anhadir_a_lista_id($1,$$);
+        };
 
 decl_ent_sal: decl_ent {;}
             | decl_ent decl_salida {;}
