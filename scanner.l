@@ -175,11 +175,16 @@ OP_COMPARADOR {COMP_IGUALDAD}|{COMP_DIFERENCIA}|{COMP_MENOR_IGUAL}|{COMP_MAYOR_I
 {TIPO}                          {return TK_TIPO ;}
 {FTIPO}                         {return TK_FTIPO ;}
 
-{CARACTER}                      {return TK_LITERAL_CARACTER;}
-{CADENA}                        {return TK_LITERAL_CADENA;}
-{BOOLEANO}                      {return TK_LITERAL_BOOLEANO;}
-{ENTERO}                        {return TK_LITERAL_NUMERICO;}
-{DECIMAL}                       {return TK_LITERAL_NUMERICO;}
+{CARACTER}                      {yyval.paraNombreTipo = 4;
+                                 return TK_LITERAL_CARACTER;}
+{CADENA}                        {yyval.paraNombreTipo = 3;
+                                 return TK_LITERAL_CADENA;}
+{BOOLEANO}                      {yyval.paraNombreTipo = 2;
+                                 return TK_LITERAL_BOOLEANO;}
+{ENTERO}                        {yyval.paraNombreTipo = 0;
+                                 return TK_LITERAL_NUMERICO;}
+{DECIMAL}                       {yyval.paraNombreTipo = 1;
+                                 return TK_LITERAL_NUMERICO;}
 
 {COMENTARIO}                    {return TK_COMENTARIO;}
 

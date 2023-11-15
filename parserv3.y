@@ -12,6 +12,7 @@ extern FILE* yyin;
 %union{
         ListaId_T paraListaId;
         char* paraCadena;
+        NombreTipo paraNombreTipo;
 }
 
 %token<paraCadena> TK_IDENTIFICADOR
@@ -23,7 +24,8 @@ extern FILE* yyin;
 
 /*token declaracion tipo*/
 %token TK_CREACION_TIPO TK_TUPLA TK_FTUPLA TK_TABLA  TK_FINAL_ARRAY 
-%token TK_DE TK_SUBRANGO  TK_TIPOBASE TK_LITERAL_CARACTER TK_DEFINICION_TIPO
+%token TK_DE TK_SUBRANGO TK_LITERAL_CARACTER TK_DEFINICION_TIPO
+%token<paraNombreTipo> TK_TIPOBASE
 %token TK_PUNTO TK_INICIO_ARRAY TK_REF
 %left TK_PUNTO TK_INICIO_ARRAY TK_REF
 
@@ -52,6 +54,7 @@ extern FILE* yyin;
 %token TK_ACCION TK_FACCION TK_FUNCION TK_DEV TK_FFUNCION TK_ENTRADA_SALIDA
 
 %type<paraListaId> lista_id
+%type<paraNombreTipo> d_tipo
 
 %%
 
@@ -100,7 +103,7 @@ d_tipo: TK_TUPLA lista_campos TK_FTUPLA{;}
       | TK_IDENTIFICADOR{;}
       | expresion_t TK_SUBRANGO expresion_t{;}
       | TK_REF d_tipo{;}
-      | TK_TIPOBASE{} /*ojo ojimetro al tipo base, igual hay que hacer fijfushfiuahsfu*/
+      | TK_TIPOBASE{$$=$1} /*ojo ojimetro al tipo base, igual hay que hacer fijfushfiuahsfu*/
       ;
 
 expresion_t: expresion{;}
@@ -121,7 +124,7 @@ lista_d_cte: TK_IDENTIFICADOR TK_CREACION_TIPO TK_LITERAL_BOOLEANO TK_SECUENCIAL
            ;
 lista_d_var: lista_id TK_DEFINICION_TIPO d_tipo TK_SECUENCIAL lista_d_var
              {
-                ;
+                volcar_lista_id($1,$3);
              }
            | {;}
            ;

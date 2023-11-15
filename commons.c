@@ -38,3 +38,14 @@ void liberar_lista_id(ListaId_T* lista){
 bool esta_lista_id_vacia(ListaId_T* lista){
     return lista == NULL;
 }
+
+void volcar_lista_id_a_tabla(ListaId_T* lista, NombreTipo tipo){
+    ListaId_T* aux;
+    while (!esta_lista_id_vacia(lista)) {
+        aux = lista;
+        lista = lista->next;
+        add_to_symbol_table(aux->id, tipo);
+        free(aux->id);  // Free the id string
+        free(aux);
+    }
+}
