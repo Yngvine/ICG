@@ -10,8 +10,11 @@ extern FILE* yyin;
 %define parse.error verbose
 
 %union{
+        SymbolEntry paraSymbolEntry;
         ListaId_T paraListaId;
         char* paraCadena;
+        int paraEntero;
+        float paraReal;
         NombreTipo paraNombreTipo;
 }
 
@@ -55,6 +58,7 @@ extern FILE* yyin;
 
 %type<paraListaId> lista_id
 %type<paraNombreTipo> d_tipo
+%type<> exp_a
 
 %%
 
@@ -163,13 +167,21 @@ expresion: exp_a{;}
 exp_a: exp_a TK_SUMA exp_a{;}
      | exp_a TK_RESTA exp_a{;}
      | exp_a TK_PRODUCTO exp_a{;}
-     | exp_a TK_DIVISION exp_a{;}
-     | exp_a TK_MODULO exp_a{;}
+     | exp_a TK_DIVISION exp_a{if($1.tipo == paraNombreTipo.T_ENTERO && $3.tipo == paraNombreTipo.T_ENTERO){
+                                $$ = new NodoExpresion($1.valor / $3.valor, paraNombreTipo.T_ENTERO);
+                            }else{
+                                $$ = new NodoExpresion($1.valor / $3.valor, paraNombreTipo.T_REAL);
+                         }}
+     | exp_a TK_MODULO exp_a{if($1.tipo == paraNombreTipo.T_ENTERO && $3.tipo == paraNombreTipo.T_ENTERO){
+                                $$ = new NodoExpresion($1.valor % $3.valor, paraNombreTipo.T_ENTERO);
+                            }else{
+                                $$ = new NodoExpresion($1.valor % $3.valor, paraNombreTipo.T_REAL);
+                         }}
      | exp_a TK_DIV exp_a{;}
-     | TK_APERTURA_PARENTESIS exp_a TK_CIERRE_PARENTESIS{;}
+     | TK_APERTURA_PARENTESIS exp_a TK_CIERRE_PARENTESIS{$$ = $2;}
      | operando{;}
-     | TK_LITERAL_NUMERICO{;}
-     | TK_RESTA exp_a %prec UMENOS{;}
+     | TK_LITERAL_NUMERICO{ $$ = $1;}
+     | TK_RESTA exp_a %prec UMENOS{$$ = -$1;}
      ;
 
 exp_b: exp_b TK_Y exp_b{;}

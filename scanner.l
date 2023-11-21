@@ -16,7 +16,8 @@ ID {LETRA}{LETRA_O_DIGITO}*
 /*Tipos base del lenguaje*/
 ENTERO [+-]?{DIGITO}+([eE]{DIGITO}+)?
 DECIMAL [+-]?{DIGITO}+(.{DIGITO}+)?([eE]{DIGITO}+)?
-BOOLEANO ((?i:verdadero)|(?i:falso))
+BOOLEANO_VERDADERO (?i:verdadero)
+BOOLEANO_FALSO (?i:falso)
 CARACTER \".\"
 CADENA '([^']|(\/')|\n)*'
 
@@ -75,7 +76,6 @@ DECLARACION_TIPO {NT_BOOLEANO}|{NT_REAL}|{NT_CADENA}|{NT_CARACTER}|{NT_ENTERO}|{
 
 DE (?i:de)
 DEV (?i:dev)
-DIV (?i:div)
 REF (?i:ref)
 
 /*Operadores*/
@@ -84,6 +84,7 @@ OP_SUMA \+
 OP_RESTA -
 OP_MULTIPLICACION \*
 OP_DIVISION \/
+OP_DIV (?i:div)
 
 OP_ASIGNACION :=
 OP_CREACION_DE_TIPO =
@@ -159,7 +160,7 @@ OP_COMPARADOR {COMP_IGUALDAD}|{COMP_DIFERENCIA}|{COMP_MENOR_IGUAL}|{COMP_MAYOR_I
 
 {DE}                            {return TK_DE ;}
 {DEV}                           {return TK_DEV ;}
-{DIV}                           {return TK_DIV ;}
+{OP_DIV}                           {return TK_DIV ;}
 {REF}                           {return TK_REF ;}
 
 {SI}                            {return TK_SI ;}
@@ -171,19 +172,33 @@ OP_COMPARADOR {COMP_IGUALDAD}|{COMP_DIFERENCIA}|{COMP_MENOR_IGUAL}|{COMP_MAYOR_I
 {O}                             {return TK_O ;}
 {NEGACION}                      {return TK_NO ;}
 
-{DECLARACION_TIPO}              {return TK_TIPOBASE;} 
+{NT_ENTERO}                     {yyval.paraNombreTipo = 0;
+                                 return TK_TIPOBASE;}
+{NT_REAL}                       {yyval.paraNombreTipo = 1;
+                                 return TK_TIPOBASE;}
+{NT_BOOLEANO}                   {yyval.paraNombreTipo = 2;
+                                 return TK_TIPOBASE;}
+{NT_CADENA}                     {yyval.paraNombreTipo = 3;
+                                 return TK_TIPOBASE;}
+{NT_CARACTER}                   {yyval.paraNombreTipo = 4;
+                                 return TK_TIPOBASE;}
+{NT_TABLA}                      {yyval.paraNombreTipo = 5;
+                                 return TK_TIPOBASE;}
+
 {TIPO}                          {return TK_TIPO ;}
 {FTIPO}                         {return TK_FTIPO ;}
 
-{CARACTER}                      {yyval.paraNombreTipo = 4;
+{CARACTER}                      {yyval.paraCadena = strdup(yytext);
                                  return TK_LITERAL_CARACTER;}
-{CADENA}                        {yyval.paraNombreTipo = 3;
+{CADENA}                        {yyval.paraCadena = strdup(yytext);
                                  return TK_LITERAL_CADENA;}
-{BOOLEANO}                      {yyval.paraNombreTipo = 2;
+{BOOLEANO_VERDADERO}            {yyval.paraBooleano = TRUE;
                                  return TK_LITERAL_BOOLEANO;}
-{ENTERO}                        {yyval.paraNombreTipo = 0;
+{BOOLEANO_FALSO}                {yyval.paraBooleano = FALSE;
+                                 return TK_LITERAL_BOOLEANO;}
+{ENTERO}                        {yyval.paraEntero = atoi(yytext);
                                  return TK_LITERAL_NUMERICO;}
-{DECIMAL}                       {yyval.paraNombreTipo = 1;
+{DECIMAL}                       {yyval.paraDecimal = atof(yytext);
                                  return TK_LITERAL_NUMERICO;}
 
 {COMENTARIO}                    {return TK_COMENTARIO;}
