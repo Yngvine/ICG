@@ -1,8 +1,12 @@
 #ifndef COMMONS_H
 #define COMMONS_H
 
+#include <stdbool.h>
+#include <stdio.h>
+
 #define MAX_ID_LENGTH 50
 #define MAX_LIST_SIZE 100
+#define EXIT_FAILURE -1
 
 typedef struct {
     char id[MAX_ID_LENGTH];
@@ -22,8 +26,8 @@ typedef enum {
 } NombreTipo;
 
 typedef struct{
-    FALSE = 1;
-    TRUE = 2;
+    int FALSE;
+    int TRUE;
 } Booleano;
 
 void anhadir_a_lista_id(char* id, ListaId_T* ListaId_T);
