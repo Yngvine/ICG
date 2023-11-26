@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <stdio.h>
+#include "tabla.h"
 
 #define MAX_ID_LENGTH 50
 #define MAX_LIST_SIZE 100
@@ -31,8 +32,8 @@ struct Node {
 };
 
 typedef struct{
-    struct Node* FALSE;
-    struct Node* TRUE;
+    Quadruple* FALSE;
+    Quadruple* TRUE;
 } Booleano;
 
 struct Node* makeList(int );
