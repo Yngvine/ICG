@@ -176,13 +176,13 @@ exp_a: exp_a TK_SUMA exp_a{
         }
         else if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_REAL){
                 t.type = paraNombreTipo.T_REAL;
-                gen("inttooreal", $1.name, "", t.name);
+                gen("itof", $1.name, "", t.name);
                 gen("+", t.name, $3.name, t.name);
                 $$ = t;
         }
         else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_ENTERO){
                 t.type = paraNombreTipo.T_REAL;
-                gen("inttooreal", $3.name, "", t.name);
+                gen("itof", $3.name, "", t.name);
                 gen("+", t.name, $1.name, t.name);
                 $$ = t;
         }
@@ -201,13 +201,13 @@ exp_a: exp_a TK_SUMA exp_a{
         }
         else if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_REAL){
                 t.type = paraNombreTipo.T_REAL;
-                gen("inttooreal", $1.name, "", t.name);
+                gen("itof", $1.name, "", t.name);
                 gen("-", t.name, $3.name, t.name);
                 $$ = t;
         }
         else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_ENTERO){
                 t.type = paraNombreTipo.T_REAL;
-                gen("inttooreal", $3.name, "", t.name);
+                gen("itof", $3.name, "", t.name);
                 gen("-", t.name, $1.name, t.name);
                 $$ = t;
         }
@@ -225,13 +225,13 @@ exp_a: exp_a TK_SUMA exp_a{
         }
         else if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_REAL){
                 t.type = paraNombreTipo.T_REAL;
-                gen("inttooreal", $1.name, "", t.name);
+                gen("itof", $1.name, "", t.name);
                 gen("*", t.name, $3.name, t.name);
                 $$ = t;
         }
         else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_ENTERO){
                 t.type = paraNombreTipo.T_REAL;
-                gen("inttooreal", $3.name, "", t.name);
+                gen("itof", $3.name, "", t.name);
                 gen("*", t.name, $1.name, t.name);
                 $$ = t;
         }
@@ -250,13 +250,13 @@ exp_a: exp_a TK_SUMA exp_a{
         }
         else if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_REAL){
                 t.type = paraNombreTipo.T_REAL;
-                gen("inttooreal", $1.name, "", t.name);
+                gen("itof", $1.name, "", t.name);
                 gen("/", t.name, $3.name, t.name);
                 $$ = t;
         }
         else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_ENTERO){
                 t.type = paraNombreTipo.T_REAL;
-                gen("inttooreal", $3.name, "", t.name);
+                gen("itof", $3.name, "", t.name);
                 gen("/", t.name, $1.name, t.name);
                 $$ = t;
         }
@@ -271,6 +271,23 @@ exp_a: exp_a TK_SUMA exp_a{
         gen("MOD", $1.name, $3.name, t.name);
         $$ = t;
         }
+        else if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_REAL){
+                t.type = paraNombreTipo.T_REAL;
+                gen("itof", $1.name, "", t.name);
+                gen("MOD", t.name, $3.name, t.name);
+                $$ = t;
+        }
+        else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_ENTERO){
+                t.type = paraNombreTipo.T_REAL;
+                gen("itof", $3.name, "", t.name);
+                gen("MOD", t.name, $1.name, t.name);
+                $$ = t;
+        }
+        else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_REAL){
+                t.type = paraNombreTipo.T_REAL;
+                gen("MOD", t.name, $1.name, t.name);
+                $$ = t;
+        }}
      | exp_a TK_DIV exp_a{
         SymbolEntry* t = newTemp();
         if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_ENTERO){
@@ -278,15 +295,29 @@ exp_a: exp_a TK_SUMA exp_a{
                 gen("DIV", $1.name, $3.name, t.name);
                 $$ = t;
         }
-        else{
-                error();
+        else if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_REAL){
+                t.type = paraNombreTipo.T_REAL;
+                gen("itof", $1.name, "", t.name);
+                gen("DIV", t.name, $3.name, t.name);
+                $$ = t;
         }
+        else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_ENTERO){
+                t.type = paraNombreTipo.T_REAL;
+                gen("itof", $3.name, "", t.name);
+                gen("DIV", t.name, $1.name, t.name);
+                $$ = t;
+        }
+        else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_REAL){
+                t.type = paraNombreTipo.T_REAL;
+                gen("DIV", t.name, $1.name, t.name);
+                $$ = t;
         }
      }
      | TK_APERTURA_PARENTESIS exp_a TK_CIERRE_PARENTESIS{$$ = $2;}
      | operando{$$ = $1;}
      | TK_LITERAL_NUMERICO{ $$ = $1;}
-     | TK_RESTA exp_a %prec UMENOS{$$ = -$1;
+     | TK_RESTA exp_a %prec UMENOS{
+        $$ = -$1;
         gen("-", t.name, "", t.name);  
      }
      ;
@@ -358,12 +389,11 @@ instruccion: TK_CONTINUAR{;}
 
 asignacion: operando TK_ASIGNACION expresion
         {if(consulta_tipo_TS($1.name) == $3.type){
-                gen("","",$3.name,$1.name);
+                gen("",$3.name,"",$1.name);
         }
         else if(consulta_tipo_TS($1.name) == T_REAL && $3.type == T_ENTERO){
-                SymbolEntry* t = newTemp();
-                gen("inttooint", $3.name, "", t.name);
-                gen("","",t.name,$1.name);
+                gen("itof", $3.name, "", $3.name);
+                gen("",$3.name,"",$1.name)
         }
         else{
                 error();
