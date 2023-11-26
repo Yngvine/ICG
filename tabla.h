@@ -25,12 +25,13 @@ Quadruple quadruplesTable[MAX_QUADRUPLES];
 
 int symbolTableIndex = 0; // Keep track of the current index in symbolTable
 int quadruplesTableIndex = 0; // Keep track of the current index in quadruplesTable
+int tempVarIndex = 0;
 
 void add_to_symbol_table(char* , int );
 
 SymbolEntry* lookup_symbol(char* , int );
 
-void add_quadruple(char* , char* , char* , char* );
+void gen(char* , char* , char* , char* );
 
 Quadruple* lookup_quadruple(char* , char* , char* , char* );
 

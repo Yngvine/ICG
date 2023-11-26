@@ -21,6 +21,10 @@ typedef enum {
     T_CARACTER = 4,
 } NombreTipo;
 
+typedef struct{
+    FALSE = 1;
+    TRUE = 2;
+} Booleano;
 
 void anhadir_a_lista_id(char* id, ListaId_T* ListaId_T);
 

@@ -16,6 +16,7 @@ extern FILE* yyin;
         int paraEntero;
         float paraReal;
         NombreTipo paraNombreTipo;
+        Booleano paraBooleano;
 }
 
 %token<paraCadena> TK_IDENTIFICADOR
@@ -58,8 +59,8 @@ extern FILE* yyin;
 
 %type<paraListaId> lista_id
 %type<paraNombreTipo> d_tipo
-%type<> exp_a
-
+%type<paraSymbolEntry> exp_a
+%type<paraBooleano> exp_b
 %%
 
 /*Seccion algoritmos*/
@@ -160,40 +161,211 @@ decl_salida: TK_SALIDA lista_d_var{;};
 
 /* Seccion expresiones*/
 
+
+
 expresion: exp_a{;}
          | funcion_ll{;}
          ;
 
-exp_a: exp_a TK_SUMA exp_a{;}
-     | exp_a TK_RESTA exp_a{;}
-     | exp_a TK_PRODUCTO exp_a{;}
-     | exp_a TK_DIVISION exp_a{if($1.tipo == paraNombreTipo.T_ENTERO && $3.tipo == paraNombreTipo.T_ENTERO){
-                                $$ = new NodoExpresion($1.valor / $3.valor, paraNombreTipo.T_ENTERO);
-                            }else{
-                                $$ = new NodoExpresion($1.valor / $3.valor, paraNombreTipo.T_REAL);
-                         }}
-     | exp_a TK_MODULO exp_a{if($1.tipo == paraNombreTipo.T_ENTERO && $3.tipo == paraNombreTipo.T_ENTERO){
-                                $$ = new NodoExpresion($1.valor % $3.valor, paraNombreTipo.T_ENTERO);
-                            }else{
-                                $$ = new NodoExpresion($1.valor % $3.valor, paraNombreTipo.T_REAL);
-                         }}
-     | exp_a TK_DIV exp_a{;}
+exp_a: exp_a TK_SUMA exp_a{
+        SymbolEntry* t = newTemp();
+        if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_ENTERO){
+                t.type = paraNombreTipo.T_ENTERO;
+                gen("+", $1.name, $3.name, t.name);
+                $$ = t;
+        }
+        else if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_REAL){
+                t.type = paraNombreTipo.T_REAL;
+                gen("inttooreal", $1.name, "", t.name);
+                gen("+", t.name, $3.name, t.name);
+                $$ = t;
+        }
+        else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_ENTERO){
+                t.type = paraNombreTipo.T_REAL;
+                gen("inttooreal", $3.name, "", t.name);
+                gen("+", t.name, $1.name, t.name);
+                $$ = t;
+        }
+        else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_REAL){
+                t.type = paraNombreTipo.T_REAL;
+                gen("+", t.name, $1.name, t.name);
+                $$ = t;
+        }
+        }
+     | exp_a TK_RESTA exp_a{
+        SymbolEntry* t = newTemp();
+        if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_ENTERO){
+                t.type = paraNombreTipo.T_ENTERO;
+                gen("-", $1.name, $3.name, t.name);
+                $$ = t;
+        }
+        else if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_REAL){
+                t.type = paraNombreTipo.T_REAL;
+                gen("inttooreal", $1.name, "", t.name);
+                gen("-", t.name, $3.name, t.name);
+                $$ = t;
+        }
+        else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_ENTERO){
+                t.type = paraNombreTipo.T_REAL;
+                gen("inttooreal", $3.name, "", t.name);
+                gen("-", t.name, $1.name, t.name);
+                $$ = t;
+        }
+        else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_REAL){
+                t.type = paraNombreTipo.T_REAL;
+                gen("-", t.name, $1.name, t.name);
+                $$ = t;
+        }}
+     | exp_a TK_PRODUCTO exp_a{
+        SymbolEntry* t = newTemp();
+        if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_ENTERO){
+                t.type = paraNombreTipo.T_ENTERO;
+                gen("*", $1.name, $3.name, t.name);
+                $$ = t;
+        }
+        else if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_REAL){
+                t.type = paraNombreTipo.T_REAL;
+                gen("inttooreal", $1.name, "", t.name);
+                gen("*", t.name, $3.name, t.name);
+                $$ = t;
+        }
+        else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_ENTERO){
+                t.type = paraNombreTipo.T_REAL;
+                gen("inttooreal", $3.name, "", t.name);
+                gen("*", t.name, $1.name, t.name);
+                $$ = t;
+        }
+        else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_REAL){
+                t.type = paraNombreTipo.T_REAL;
+                gen("*", t.name, $1.name, t.name);
+                $$ = t;
+        }
+     }
+     | exp_a TK_DIVISION exp_a{
+        SymbolEntry* t = newTemp();
+        if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_ENTERO){
+                t.type = paraNombreTipo.T_ENTERO;
+                gen("/", $1.name, $3.name, t.name);
+                $$ = t;
+        }
+        else if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_REAL){
+                t.type = paraNombreTipo.T_REAL;
+                gen("inttooreal", $1.name, "", t.name);
+                gen("/", t.name, $3.name, t.name);
+                $$ = t;
+        }
+        else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_ENTERO){
+                t.type = paraNombreTipo.T_REAL;
+                gen("inttooreal", $3.name, "", t.name);
+                gen("/", t.name, $1.name, t.name);
+                $$ = t;
+        }
+        else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_REAL){
+                t.type = paraNombreTipo.T_REAL;
+                gen("/", t.name, $1.name, t.name);
+                $$ = t;
+        }}
+     | exp_a TK_MODULO exp_a{
+        SymbolEntry* t = newTemp();
+        if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_ENTERO){
+                t.type = paraNombreTipo.T_ENTERO;
+                gen("MOD", $1.name, $3.name, t.name);
+                $$ = t;
+        }
+        else if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_REAL){
+                t.type = paraNombreTipo.T_REAL;
+                gen("inttooreal", $1.name, "", t.name);
+                gen("MOD", t.name, $3.name, t.name);
+                $$ = t;
+        }
+        else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_ENTERO){
+                t.type = paraNombreTipo.T_REAL;
+                gen("inttooreal", $3.name, "", t.name);
+                gen("MOD", t.name, $1.name, t.name);
+                $$ = t;
+        }
+        else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_REAL){
+                t.type = paraNombreTipo.T_REAL;
+                gen("MOD", t.name, $1.name, t.name);
+                $$ = t;
+        }}
+     | exp_a TK_DIV exp_a{
+        SymbolEntry* t = newTemp();
+        if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_ENTERO){
+                t.type = paraNombreTipo.T_ENTERO;
+                gen("DIV", $1.name, $3.name, t.name);
+                $$ = t;
+        }
+        else if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_REAL){
+                t.type = paraNombreTipo.T_REAL;
+                gen("inttooreal", $1.name, "", t.name);
+                gen("DIV", t.name, $3.name, t.name);
+                $$ = t;
+        }
+        else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_ENTERO){
+                t.type = paraNombreTipo.T_REAL;
+                gen("inttooreal", $3.name, "", t.name);
+                gen("DIV", t.name, $1.name, t.name);
+                $$ = t;
+        }
+        else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_REAL){
+                t.type = paraNombreTipo.T_REAL;
+                gen("DIV", t.name, $1.name, t.name);
+                $$ = t;
+        }
+     }
      | TK_APERTURA_PARENTESIS exp_a TK_CIERRE_PARENTESIS{$$ = $2;}
-     | operando{;}
+     | operando{$$ = $1;}
      | TK_LITERAL_NUMERICO{ $$ = $1;}
-     | TK_RESTA exp_a %prec UMENOS{$$ = -$1;}
+     | TK_RESTA exp_a %prec UMENOS{$$ = -$1;
+        gen("-", t.name, "", t.name);  
+     }
      ;
 
-exp_b: exp_b TK_Y exp_b{;}
-     | exp_b TK_O exp_b{;}
-     | TK_NO exp_b %prec NEGACION{;}
-     | operando_b{;}
+
+
+//UMMMMMMM NO ENTIENDO COSAS SI 
+exp_b: exp_b TK_Y M exp_b{
+        Booleano E;
+        backpatch($1.FALSE, M.quad);
+        E.TRUE = merge($1.TRUE,$3.TRUE);
+        E.FALSE = $2.FALSE;
+        $$ = E;
+     } 
+     | exp_b TK_O M exp_b{
+        Booleano E;
+        backpatch($1.TRUE, M.quad);
+        E.FALSE = merge($1.FALSE,$3.FALSE);
+        E.TRUE = $2.TRUE;
+        $$ = E;
+     }
+     | TK_NO exp_b %prec NEGACION{
+        Booleano E;
+        E.FALSE = $2.TRUE;
+        E.TRUE = $2.FALSE;
+        $$ = E;
+     }
+     | operando_b{
+        Booleano E;
+        E.TRUE = makeList(nextquad);
+        E.FALSE = makeList(nextquad+1);
+        gen("if", $1.name, "", goto);
+        gen("","","",goto);
+        $$ = E;
+        }
      | TK_VERDADERO{;}
      | TK_FALSO{;}
-     | expresion TK_OPREL expresion{;}
-     | TK_APERTURA_PARENTESIS exp_b TK_CIERRE_PARENTESIS{;}
+     | expresion TK_OPREL expresion{
+        M.quad = nextquad; //no se mouy bien como va esto
+     }
+     | TK_APERTURA_PARENTESIS exp_b TK_CIERRE_PARENTESIS{
+        Booleano E;
+        E.FALSE = $2.TRUE;
+        E.TRUE = $2.FALSE;
+        $$ = E;
+     }
      ;
-
+M:{};
 operando: TK_IDENTIFICADOR{;}
           | operando TK_PUNTO operando {;}
           | operando TK_INICIO_ARRAY expresion TK_FINAL_ARRAY{;}
@@ -215,7 +387,16 @@ instruccion: TK_CONTINUAR{;}
            | accion_ll{;}
            ;
 
-asignacion: operando TK_ASIGNACION expresion{;}
+asignacion: operando TK_ASIGNACION expresion
+        {if(consulta_tipo_TS($1.name) == $3.type){
+                gen(($1.name) == $3.type);
+        }
+        else if(consulta_tipo_TS($1.name) == T_REAL && $3.type == T_ENTERO){
+                gen(($1.name) == atoi($3.type));
+        }
+        else{
+                error();
+        }}
           | operando TK_ASIGNACION exp_b{;}
           ;
 
