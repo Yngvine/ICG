@@ -244,7 +244,7 @@ exp_a: exp_a TK_SUMA exp_a{
      | exp_a TK_DIVISION exp_a{
         SymbolEntry* t = newTemp();
         if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_ENTERO){
-                t.type = paraNombreTipo.T_ENTERO;
+                t.type = paraNombreTipo.T_REAL;
                 gen("/", $1.name, $3.name, t.name);
                 $$ = t;
         }
@@ -267,28 +267,10 @@ exp_a: exp_a TK_SUMA exp_a{
         }}
      | exp_a TK_MODULO exp_a{
         SymbolEntry* t = newTemp();
-        if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_ENTERO){
-                t.type = paraNombreTipo.T_ENTERO;
-                gen("MOD", $1.name, $3.name, t.name);
-                $$ = t;
+        t.type = paraNombreTipo.T_ENTERO;
+        gen("MOD", $1.name, $3.name, t.name);
+        $$ = t;
         }
-        else if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_REAL){
-                t.type = paraNombreTipo.T_REAL;
-                gen("inttooreal", $1.name, "", t.name);
-                gen("MOD", t.name, $3.name, t.name);
-                $$ = t;
-        }
-        else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_ENTERO){
-                t.type = paraNombreTipo.T_REAL;
-                gen("inttooreal", $3.name, "", t.name);
-                gen("MOD", t.name, $1.name, t.name);
-                $$ = t;
-        }
-        else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_REAL){
-                t.type = paraNombreTipo.T_REAL;
-                gen("MOD", t.name, $1.name, t.name);
-                $$ = t;
-        }}
      | exp_a TK_DIV exp_a{
         SymbolEntry* t = newTemp();
         if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_ENTERO){
@@ -296,22 +278,9 @@ exp_a: exp_a TK_SUMA exp_a{
                 gen("DIV", $1.name, $3.name, t.name);
                 $$ = t;
         }
-        else if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_REAL){
-                t.type = paraNombreTipo.T_REAL;
-                gen("inttooreal", $1.name, "", t.name);
-                gen("DIV", t.name, $3.name, t.name);
-                $$ = t;
+        else{
+                error();
         }
-        else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_ENTERO){
-                t.type = paraNombreTipo.T_REAL;
-                gen("inttooreal", $3.name, "", t.name);
-                gen("DIV", t.name, $1.name, t.name);
-                $$ = t;
-        }
-        else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_REAL){
-                t.type = paraNombreTipo.T_REAL;
-                gen("DIV", t.name, $1.name, t.name);
-                $$ = t;
         }
      }
      | TK_APERTURA_PARENTESIS exp_a TK_CIERRE_PARENTESIS{$$ = $2;}
@@ -324,7 +293,7 @@ exp_a: exp_a TK_SUMA exp_a{
 
 
 
-//UMMMMMMM NO ENTIENDO COSAS SI 
+ 
 exp_b: exp_b TK_Y M exp_b{
         Booleano E;
         backpatch($1.FALSE, M.quad);
@@ -347,16 +316,16 @@ exp_b: exp_b TK_Y M exp_b{
      }
      | operando_b{
         Booleano E;
-        E.TRUE = makeList(nextquad);
-        E.FALSE = makeList(nextquad+1);
-        gen("if", $1.name, "", goto);
-        gen("","","",goto);
+        E.TRUE = makeList(nextquad()+0);
+        E.FALSE = makeList(nextquad()+1);
+        gen("if", $1.name, "", "goto");
+        gen("","","","goto");
         $$ = E;
         }
      | TK_VERDADERO{;}
      | TK_FALSO{;}
      | expresion TK_OPREL expresion{
-        M.quad = nextquad; //no se mouy bien como va esto
+        M.quad = nextquad(); //no se mouy bien como va esto
      }
      | TK_APERTURA_PARENTESIS exp_b TK_CIERRE_PARENTESIS{
         Booleano E;
@@ -389,10 +358,12 @@ instruccion: TK_CONTINUAR{;}
 
 asignacion: operando TK_ASIGNACION expresion
         {if(consulta_tipo_TS($1.name) == $3.type){
-                gen(($1.name) == $3.type);
+                gen("","",$3.name,$1.name);
         }
         else if(consulta_tipo_TS($1.name) == T_REAL && $3.type == T_ENTERO){
-                gen(($1.name) == atoi($3.type));
+                SymbolEntry* t = newTemp();
+                gen("inttooint", $3.name, "", t.name);
+                gen("","",t.name,$1.name);
         }
         else{
                 error();

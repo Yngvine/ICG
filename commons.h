@@ -25,19 +25,29 @@ typedef enum {
     T_CARACTER = 4,
 } NombreTipo;
 
+struct Node {
+    int quad;
+    struct Node* next;
+};
+
 typedef struct{
-    int FALSE;
-    int TRUE;
+    struct Node* FALSE;
+    struct Node* TRUE;
 } Booleano;
 
-void anhadir_a_lista_id(char* id, ListaId_T* ListaId_T);
+struct Node* makeList(int );
 
-void inicializar_lista_id(ListaId_T* ListaId_T);
+struct Node* merge(struct Node* , struct Node* );
 
-void liberar_lista_id(ListaId_T* ListaId_T);
 
-bool esta_lista_id_vacia(ListaId_T* ListaId_T);
+void anhadir_a_lista_id(char* id, ListaId_T* );
 
-void volcar_lista_id_a_tabla(ListaId_T* ListaId_T, NombreTipo tipo);
+void inicializar_lista_id(ListaId_T* );
+
+void liberar_lista_id(ListaId_T* );
+
+bool esta_lista_id_vacia(ListaId_T* );
+
+void volcar_lista_id_a_tabla(ListaId_T* , NombreTipo );
 
 #endif //COMMONS_H

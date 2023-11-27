@@ -39,4 +39,5 @@ void cleanup_symbol_table();
 
 void cleanup_quadruples_table();
 
+void backpacht(struct Node* , int);
 #endif //TABLA_H

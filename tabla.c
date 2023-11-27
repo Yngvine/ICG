@@ -80,3 +80,13 @@ void cleanup_symbol_table() {
 void cleanup_quadruples_table() {
     quadruplesTableIndex = 0;
 }
+
+void backpacht(struct Node* l, int quad){
+    struct Node* current = l;
+    
+    while (current != NULL) {
+        quadruplesTable[current->quad].result = quad;
+        current = current->next;
+        
+    }
+}
