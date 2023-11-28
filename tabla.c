@@ -90,3 +90,7 @@ void backpacht(struct Node* l, int quad){
         
     }
 }
+
+inf nextquad(){
+    return quadruplesTableIndex;
+}
