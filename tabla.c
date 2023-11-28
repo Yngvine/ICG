@@ -13,10 +13,19 @@ void add_to_symbol_table(char* name, int type) {
     }
 }
 
-SymbolEntry* lookup_symbol(char* name, int type) {
+SymbolEntry* lookup_symbol(char* name) {
     for (int i = 0; i < symbolTableIndex; ++i) {
-        if (strcmp(symbolTable[i].name, name) == 0 && symbolTable[i].type == type) {
+        if (strcmp(symbolTable[i].name, name) == 0) {
             return &symbolTable[i]; // Found the entry
+        }
+    }
+    return NULL; // Entry not found
+}
+
+int lookup_symbol_idx(SymbolEntry* s) {
+    for (int i = 0; i < symbolTableIndex; ++i) {
+        if (strcmp(symbolTable[i].name, s->name) == 0 && symbolTable[i].type == s->type) {
+            return i; // Found the entry
         }
     }
     return NULL; // Entry not found
@@ -61,17 +70,6 @@ void gen(char* op, char* operand1, char* operand2, char* result) {
     }
 }
 
-Quadruple* lookup_quadruple(char* op, char* operand1, char* operand2, char* result) {
-    for (int i = 0; i < quadruplesTableIndex; ++i) {
-        if (strcmp(quadruplesTable[i].operator, op) == 0 &&
-            strcmp(quadruplesTable[i].operand1, operand1) == 0 &&
-            strcmp(quadruplesTable[i].operand2, operand2) == 0 &&
-            strcmp(quadruplesTable[i].result, result) == 0) {
-            return quadruplesTable[i]; // Found the entry
-        }
-    }
-    return NULL; // Entry not found
-}
 
 void cleanup_symbol_table() {
     symbolTableIndex = 0;

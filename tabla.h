@@ -14,10 +14,10 @@ typedef struct SymbolEntry {
 } SymbolEntry;
 
 typedef struct Quadruple {
-    char operator[MAX_OPERATOR_LENGTH];
-    char operand1[MAX_OPERAND_LENGTH];
-    char operand2[MAX_OPERAND_LENGTH];
-    char result[MAX_OPERAND_LENGTH];
+    int operator[MAX_OPERATOR_LENGTH];
+    int operand1[MAX_OPERAND_LENGTH];
+    int operand2[MAX_OPERAND_LENGTH];
+    int result[MAX_OPERAND_LENGTH];
 } Quadruple;
 
 SymbolEntry symbolTable[MAX_SYMBOLS];
@@ -29,15 +29,19 @@ int tempVarIndex = 0;
 
 void add_to_symbol_table(char* , int );
 
-SymbolEntry* lookup_symbol(char* , int );
+SymbolEntry* lookup_symbol(char*);
 
-void gen(char* , char* , char* , char* );
+int lookup_symbol_idx(SymbolEntry*);
 
-Quadruple* lookup_quadruple(char* , char* , char* , char* );
+SymbolEntry* newTemp();
+
+void gen(int , int , int , int );
 
 void cleanup_symbol_table();
 
 void cleanup_quadruples_table();
 
 void backpacht(quadList*, int);
+
+int nextquad();
 #endif //TABLA_H
