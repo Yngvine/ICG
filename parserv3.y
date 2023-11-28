@@ -266,51 +266,24 @@ exp_a: exp_a TK_SUMA exp_a{
                 $$ = t;
         }}
      | exp_a TK_MODULO exp_a{
-        SymbolEntry* t = newTemp();
-        t.type = paraNombreTipo.T_ENTERO;
-        gen("MOD", $1.name, $3.name, t.name);
-        $$ = t;
-        }
-        else if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_REAL){
-                t.type = paraNombreTipo.T_REAL;
-                gen("itof", $1.name, "", t.name);
-                gen("MOD", t.name, $3.name, t.name);
-                $$ = t;
-        }
-        else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_ENTERO){
-                t.type = paraNombreTipo.T_REAL;
-                gen("itof", $3.name, "", t.name);
-                gen("MOD", t.name, $1.name, t.name);
-                $$ = t;
-        }
-        else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_REAL){
-                t.type = paraNombreTipo.T_REAL;
-                gen("MOD", t.name, $1.name, t.name);
-                $$ = t;
-        }}
-     | exp_a TK_DIV exp_a{
-        SymbolEntry* t = newTemp();
         if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_ENTERO){
+                SymbolEntry* t = newTemp();
+                t.type = paraNombreTipo.T_ENTERO;
+                gen("MOD", $1.name, $3.name, t.name);
+                $$ = t;
+        }
+        else{
+                error();
+        }
+       }
+     | exp_a TK_DIV exp_a{
+        if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_ENTERO){
+                SymbolEntry* t = newTemp();
                 t.type = paraNombreTipo.T_ENTERO;
                 gen("DIV", $1.name, $3.name, t.name);
                 $$ = t;
-        }
-        else if($1.type == paraNombreTipo.T_ENTERO && $3.type == paraNombreTipo.T_REAL){
-                t.type = paraNombreTipo.T_REAL;
-                gen("itof", $1.name, "", t.name);
-                gen("DIV", t.name, $3.name, t.name);
-                $$ = t;
-        }
-        else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_ENTERO){
-                t.type = paraNombreTipo.T_REAL;
-                gen("itof", $3.name, "", t.name);
-                gen("DIV", t.name, $1.name, t.name);
-                $$ = t;
-        }
-        else if($1.type == paraNombreTipo.T_REAL && $3.type == paraNombreTipo.T_REAL){
-                t.type = paraNombreTipo.T_REAL;
-                gen("DIV", t.name, $1.name, t.name);
-                $$ = t;
+        }else{
+                error();
         }
      }
      | TK_APERTURA_PARENTESIS exp_a TK_CIERRE_PARENTESIS{$$ = $2;}
