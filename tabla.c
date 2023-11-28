@@ -67,7 +67,7 @@ Quadruple* lookup_quadruple(char* op, char* operand1, char* operand2, char* resu
             strcmp(quadruplesTable[i].operand1, operand1) == 0 &&
             strcmp(quadruplesTable[i].operand2, operand2) == 0 &&
             strcmp(quadruplesTable[i].result, result) == 0) {
-            return &quadruplesTable[i]; // Found the entry
+            return quadruplesTable[i]; // Found the entry
         }
     }
     return NULL; // Entry not found
@@ -81,9 +81,9 @@ void cleanup_quadruples_table() {
     quadruplesTableIndex = 0;
 }
 
-void backpacht(quadList l, int quad){
-    for (int i = 0; i < l.size; ++i) {
-        quadruplesTable[l.quads[i]].result = quad;
+void backpacht(quadList* l, int quad){
+    for (int i = 0; i < l->size; ++i) {
+        quadruplesTable[l->quads[i]].result = quad;
     }   
 }
 

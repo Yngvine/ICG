@@ -4,37 +4,41 @@
 
 
 
-quadList makeList(int quadIndx) {
-    quadList newList = (quadList)malloc(sizeof(quadList));
+quadList* makeList(int quadIndx) {
+    quadList* newList = (quadList*)malloc(sizeof(quadList));
     if (newList == NULL) {
-        // Manejo de error si la asignación de memoria falla
-        perror("Error al asignar memoria para el nodo");
+        // Handle error if memory allocation fails
+        perror("Error allocating memory for the node");
         exit(EXIT_FAILURE);
     }
 
-    newList.quads[0] = quadIndx;
-    newList.size = 1;
+    newList->quads[0] = quadIndx;
+    newList->size = 1;
 
     return newList;
 }
 
-quadList merge(quadList l1, quadList l2){
-
-    quadList mergedList = (quadList)malloc(sizeof(quadList));
-    mergedList.size = 0;
-
-    for (int i = 0; i < l1.size; ++i) {
-        mergedList.quads[i] = l1.quads[i];
-        mergedList.size++;
+quadList* merge(quadList* l1, quadList* l2) {
+    quadList* mergedList = (quadList*)malloc(sizeof(quadList));
+    if (mergedList == NULL) {
+        // Handle error if memory allocation fails
+        perror("Error allocating memory for the node");
+        exit(EXIT_FAILURE);
     }
 
-    for (int i = 0; i < l2.size; ++i) {
-        mergedList.quads[i + l1.size] = l2.quads[i];
-        mergedList.size++;
+    mergedList->size = 0;
+
+    for (int i = 0; i < l1->size; ++i) {
+        mergedList->quads[i] = l1->quads[i];
+        mergedList->size++;
+    }
+
+    for (int i = 0; i < l2->size; ++i) {
+        mergedList->quads[i + l1->size] = l2->quads[i];
+        mergedList->size++;
     }
 
     return mergedList;
-
 }
 
 void freeList(quadList* list){

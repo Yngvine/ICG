@@ -36,9 +36,9 @@ typedef struct booleano{
     quadList TRUE;
 } Booleano;
 
-quadList makeList(int );
+quadList* makeList(int );
 
-quadList merge(quadList , quadList );
+quadList* merge(quadList* l1, quadList* l2);
 
 
 void anhadir_a_lista_id(char* id, ListaId_T* );
