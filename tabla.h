@@ -39,5 +39,5 @@ void cleanup_symbol_table();
 
 void cleanup_quadruples_table();
 
-void backpacht(struct Node* , int);
+void backpacht(quadList , int);
 #endif //TABLA_H

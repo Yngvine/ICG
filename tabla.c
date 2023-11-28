@@ -81,16 +81,12 @@ void cleanup_quadruples_table() {
     quadruplesTableIndex = 0;
 }
 
-void backpacht(struct Node* l, int quad){
-    struct Node* current = l;
-    
-    while (current != NULL) {
-        quadruplesTable[current->quad].result = quad;
-        current = current->next;
-        
-    }
+void backpacht(quadList l, int quad){
+    for (int i = 0; i < l.size; ++i) {
+        quadruplesTable[l.quads[i]].result = quad;
+    }   
 }
 
-inf nextquad(){
+int nextquad(){
     return quadruplesTableIndex;
 }

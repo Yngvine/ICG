@@ -4,81 +4,41 @@
 
 
 
-struct Node* makeList(int quad){
-    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-    if (newNode == NULL) {
+quadList makeList(int quadIndx) {
+    quadList newList = (quadList)malloc(sizeof(quadList));
+    if (newList == NULL) {
         // Manejo de error si la asignación de memoria falla
         perror("Error al asignar memoria para el nodo");
         exit(EXIT_FAILURE);
     }
 
-    newNode->quad = quad;
-    newNode->next = NULL;
+    newList.quads[0] = quadIndx;
+    newList.size = 1;
 
-    return newNode;
+    return newList;
 }
 
-struct Node* merge(struct Node* l1, struct Node* l2){
-    struct Node* current = l1;
-    struct Node* mergedList = NULL;
-    struct Node* behind = NULL;
+quadList merge(quadList l1, quadList l2){
 
-    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-    if (newNode == NULL) {
-        // Manejo de error si la asignación de memoria falla
-        perror("Error al asignar memoria para el nodo");
-        exit(EXIT_FAILURE);
-    }
-    newNode->quad = current->quad;
-    newNode->next = NULL;
-    behind = newNode;
-    mergedList = newNode;
-    current = current->next;
+    quadList mergedList = (quadList)malloc(sizeof(quadList));
+    mergedList.size = 0;
 
-    while (current != NULL) {
-        struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-        if (newNode == NULL) {
-            // Manejo de error si la asignación de memoria falla
-            perror("Error al asignar memoria para el nodo");
-            exit(EXIT_FAILURE);
-        }
-        behind->next = newNode;
-        newNode->quad = current->quad;
-        newNode->next = NULL;
-        behind = current;
-        current = current->next;
-        
+    for (int i = 0; i < l1.size; ++i) {
+        mergedList.quads[i] = l1.quads[i];
+        mergedList.size++;
     }
-    current = l2;
-    while (current != NULL) {
-        
-        struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-        if (newNode == NULL) {
-            // Manejo de error si la asignación de memoria falla
-            perror("Error al asignar memoria para el nodo");
-            exit(EXIT_FAILURE);
-        }
-        behind->next = newNode;
-        newNode->quad = current->quad;
-        newNode->next = NULL;
-        behind = newNode;
-        current = current->next;
-        
+
+    for (int i = 0; i < l2.size; ++i) {
+        mergedList.quads[i + l1.size] = l2.quads[i];
+        mergedList.size++;
     }
 
     return mergedList;
 
 }
 
-void freeList(struct Node* head) {
-    struct Node* current = head;
-    struct Node* next;
-
-    while (current != NULL) {
-        next = current->next;
-        free(current);
-        current = next;
-    }
+void freeList(quadList* list){
+    free(list);
 }
 
 void anhadir_a_lista_id(char* id, ListaId_T* ListaId_T){

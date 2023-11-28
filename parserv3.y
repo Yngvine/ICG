@@ -288,7 +288,7 @@ exp_a: exp_a TK_SUMA exp_a{
      }
      | TK_APERTURA_PARENTESIS exp_a TK_CIERRE_PARENTESIS{$$ = $2;}
      | operando{$$ = $1;}
-     | TK_LITERAL_NUMERICO{ $$ = $1;}
+     | TK_LITERAL_NUMERICO{}
      | TK_RESTA exp_a %prec UMENOS{
         $$ = -$1;
         gen("-", t.name, "", t.name);  

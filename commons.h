@@ -26,19 +26,19 @@ typedef enum {
     T_CARACTER = 4,
 } NombreTipo;
 
-struct Node {
-    int quad;
-    struct Node* next;
-};
+typedef struct quadList{
+    int quads[MAX_LIST_SIZE];
+    int size;
+} quadList;
 
-typedef struct{
-    Quadruple* FALSE;
-    Quadruple* TRUE;
+typedef struct booleano{
+    quadList FALSE;
+    quadList TRUE;
 } Booleano;
 
-struct Node* makeList(int );
+quadList makeList(int );
 
-struct Node* merge(struct Node* , struct Node* );
+quadList merge(quadList , quadList );
 
 
 void anhadir_a_lista_id(char* id, ListaId_T* );
