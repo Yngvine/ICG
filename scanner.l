@@ -12,6 +12,7 @@ DIGITO       [0-9]
 SALTOS_DE_LINEA ([\r\n]|[\t\n])+
 LETRA_O_DIGITO {LETRA}|{DIGITO}
 ID {LETRA}{LETRA_O_DIGITO}*
+BOOL_ID B_{ID}
 
 /*Tipos base del lenguaje*/
 ENTERO [+-]?{DIGITO}+([eE]{DIGITO}+)?
@@ -205,6 +206,9 @@ OP_COMPARADOR {COMP_IGUALDAD}|{COMP_DIFERENCIA}|{COMP_MENOR_IGUAL}|{COMP_MAYOR_I
 
 {ID}                            {yyval.paraCadena = strdup(yytext);
                                  return TK_IDENTIFICADOR;}
+
+{BOOL_ID}                       {yyval.paraCadena = strdup(yytext);
+                                 return TK_IDENTIFICADOR_B;}
 
 .                               {;}
 
