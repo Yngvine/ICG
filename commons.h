@@ -43,6 +43,12 @@ typedef enum {
     O_ITOF = 13,
     O_FTOI = 14,
     O_UMENOS = 15,
+    O_SII = 16,
+    O_SIMAYI = 17,
+    O_SIMENI = 18,
+    O_SIMAY = 19,
+    O_SIMEN = 20,
+    O_SID = 21,
 } NombreOperadores;
 
 typedef struct quadList{

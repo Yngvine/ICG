@@ -63,7 +63,7 @@ extern FILE* yyin;
 %type<paraSymbolEntry> exp_a
 %type<paraSymbolEntry> operando
 %type<paraBooleano> exp_b
-%type<paraBooleano> operando_b
+%type<paraSymbolEntry> operando_b
 %type<paraEmanem> M
 %%
 
@@ -305,46 +305,48 @@ exp_a: exp_a TK_SUMA exp_a{
 
  
 exp_b: exp_b TK_Y M exp_b{
-        Booleano E;
         backpatch($1.FALSE, M.quad);
-        E.TRUE = merge($1.TRUE,$3.TRUE);
-        E.FALSE = $2.FALSE;
-        $$ = E;
+        $$.TRUE = *merge(&$1.TRUE, &$3.TRUE);
+        $$.FALSE = $2.FALSE;
      } 
      | exp_b TK_O M exp_b{
-        Booleano E;
         backpatch($1.TRUE, M.quad);
-        E.FALSE = merge($1.FALSE,$3.FALSE);
-        E.TRUE = $2.TRUE;
-        $$ = E;
+        $$.FALSE = *merge(&$1.FALSE, &$3.FALSE);
+        $$.TRUE = $2.TRUE;
      }
      | TK_NO exp_b %prec NEGACION{
-        Booleano E;
-        E.FALSE = $2.TRUE;
-        E.TRUE = $2.FALSE;
-        $$ = E;
+        $$.FALSE = $2.TRUE;
+        $$.TRUE = $2.FALSE;
      }
      | operando_b{
-        Booleano E;
-        E.TRUE = makeList(nextquad());
-        E.FALSE = makeList(nextquad()+1);
-        gen("if", $1.name, "", );
-        gen("","","",);
-        $$ = E;
+        $$.TRUE = *makeList(nextquad());
+        $$.FALSE = *makeList(nextquad()+1);
+        gen(NombreOperadores.O_SII, $1, 'true', );
+        gen(NombreOperadores.O_GOTO, , , );
         }
-     | TK_VERDADERO{;}
-     | TK_FALSO{;}
+     | TK_VERDADERO{;} //Literales
+     | TK_FALSO{;}     //Literales
      | expresion TK_OPREL expresion{
-        E.true:= makelist(nextquad());
-        E.false:= makelist(nextquad()+1);
-        gen("if oprel.val", "id1.val"  "id2.val",  );
-        gen("goto","","", );
+        $$.TRUE = *makeList(nextquad());
+        $$.FALSE = *makeList(nextquad()+1);
+        if (TK_OPREL == NombreOperadores.O_MENOR) {
+                gen(NombreOperadores.O_SIMEN, $1, $3, );
+        } else if (TK_OPREL == NombreOperadores.O_MAYOR) {
+                gen(NombreOperadores.O_SIMAY, $1, $3, );
+        } else if (TK_OPREL == NombreOperadores.O_MENORI) {
+                gen(NombreOperadores.O_SIMENI, $1, $3, );
+        } else if (TK_OPREL == NombreOperadores.O_MAYORI) {
+                gen(NombreOperadores.O_SIMAYI, $1, $3, );
+        } else if (TK_OPREL == NombreOperadores.O_IGUAL) {
+                gen(NombreOperadores.O_SII, $1, $3, );
+        } else if (TK_OPREL == NombreOperadores.O_DISTINTO) {
+                gen(NombreOperadores.O_SID, $1, $3, );
+        }
+        gen(NombreOperadores.O_GOTO, , , );
      }
      | TK_APERTURA_PARENTESIS exp_b TK_CIERRE_PARENTESIS{
-        Booleano E;
-        E.FALSE = $2.TRUE;
-        E.TRUE = $2.FALSE;
-        $$ = E;
+        $$.TRUE = *makeList(nextquad());
+        $$.FALSE = *makeList(nextquad()+1);
      }
      ;
 M:{$$.quad = nextquad(); };
@@ -354,7 +356,7 @@ operando: TK_IDENTIFICADOR{lookup_symbol($1);}
           | operando TK_REF{;}
           ;
 
-operando_b: TK_IDENTIFICADOR_B{lookup_symbol($1)};
+operando_b: TK_IDENTIFICADOR_B{$$ = lookup_symbol($1)};
     
 /*Seccion instrucciones*/
 
