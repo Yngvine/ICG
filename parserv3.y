@@ -137,14 +137,8 @@ lista_d_var: lista_id TK_DEFINICION_TIPO d_tipo TK_SECUENCIAL lista_d_var
            ;
 
 lista_id: TK_IDENTIFICADOR TK_SEPARADOR lista_id
-        { 
-                if (esta_tabla_id_vacia($3)) { //es necesaria la comprobacion?
-                        inicializar_lista_id($3);
-                        anhadir_a_lista_id($1,$$);
-                        
-                } else {
-                        anhadir_a_lista_id($1,$3);
-                }
+        {
+                anhadir_a_lista_id($1,$3);
                 $$ = $3;
         }
         | TK_IDENTIFICADOR 
