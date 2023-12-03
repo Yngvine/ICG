@@ -60,10 +60,8 @@ extern FILE* yyin;
 
 %type<paraListaId> lista_id
 %type<paraNombreTipo> d_tipo
-%type<paraSymbolEntry> exp_a
-%type<paraSymbolEntry> operando
+%type<paraSymbolEntry> exp_a, expresion, operando, operando_b
 %type<paraBooleano> exp_b
-%type<paraSymbolEntry> operando_b
 %type<paraEmanem> M
 %%
 
@@ -167,7 +165,7 @@ decl_salida: TK_SALIDA lista_d_var{;};
 
 
 
-expresion: exp_a{;}
+expresion: exp_a{$$=$1;}
          | funcion_ll{;}
          ;
 
@@ -321,7 +319,7 @@ exp_b: exp_b TK_Y M exp_b{
      | operando_b{
         $$.TRUE = *makeList(nextquad());
         $$.FALSE = *makeList(nextquad()+1);
-        gen(NombreOperadores.O_SII, $1, 'true', );
+        gen(NombreOperadores.O_SII, lookup_symbol_idx(*$1), 'true', );
         gen(NombreOperadores.O_GOTO, , , );
         }
      | TK_VERDADERO{;} //Literales
@@ -330,17 +328,17 @@ exp_b: exp_b TK_Y M exp_b{
         $$.TRUE = *makeList(nextquad());
         $$.FALSE = *makeList(nextquad()+1);
         if (TK_OPREL == NombreOperadores.O_MENOR) {
-                gen(NombreOperadores.O_SIMEN, $1, $3, );
+                gen(NombreOperadores.O_SIMEN, lookup_symbol_idx(*$1), lookup_symbol_idx(*$3), );
         } else if (TK_OPREL == NombreOperadores.O_MAYOR) {
-                gen(NombreOperadores.O_SIMAY, $1, $3, );
+                gen(NombreOperadores.O_SIMAY, lookup_symbol_idx(*$1), lookup_symbol_idx(*$3), );
         } else if (TK_OPREL == NombreOperadores.O_MENORI) {
-                gen(NombreOperadores.O_SIMENI, $1, $3, );
+                gen(NombreOperadores.O_SIMENI, lookup_symbol_idx(*$1), lookup_symbol_idx(*$3), );
         } else if (TK_OPREL == NombreOperadores.O_MAYORI) {
-                gen(NombreOperadores.O_SIMAYI, $1, $3, );
+                gen(NombreOperadores.O_SIMAYI, lookup_symbol_idx(*$1), lookup_symbol_idx(*$3), );
         } else if (TK_OPREL == NombreOperadores.O_IGUAL) {
-                gen(NombreOperadores.O_SII, $1, $3, );
+                gen(NombreOperadores.O_SII, lookup_symbol_idx(*$1), lookup_symbol_idx(*$3), );
         } else if (TK_OPREL == NombreOperadores.O_DISTINTO) {
-                gen(NombreOperadores.O_SID, $1, $3, );
+                gen(NombreOperadores.O_SID, lookup_symbol_idx(*$1), lookup_symbol_idx(*$3), );
         }
         gen(NombreOperadores.O_GOTO, , , );
      }
@@ -373,11 +371,11 @@ instruccion: TK_CONTINUAR{;}
 
 asignacion: operando TK_ASIGNACION expresion
         {if(consulta_tipo_TS($1.name) == $3.type){
-                gen("",$3.name,"",$1.name);
+                gen(NombreOperadores.O_ASIGNACION, lookup_symbol_idx($3), , lookup_symbol_idx($1));
         }
         else if(consulta_tipo_TS($1.name) == T_REAL && $3.type == T_ENTERO){
-                gen("itof", $3.name, "", $3.name);
-                gen("",$3.name,"",$1.name)
+                gen(NombreOperadores.O_ITOF, lookup_symbol_idx($3), , lookup_symbol_idx($3));
+                gen(NombreOperadores.O_ASIGNACION, lookup_symbol_idx($3), , lookup_symbol_idx($1));
         }
         else{
                 error();

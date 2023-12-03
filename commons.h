@@ -49,6 +49,7 @@ typedef enum {
     O_SIMAY = 19,
     O_SIMEN = 20,
     O_SID = 21,
+    O_ASIGNACION = 22,
 } NombreOperadores;
 
 typedef struct quadList{
