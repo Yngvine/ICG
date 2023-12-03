@@ -88,3 +88,158 @@ void backpacht(quadList* l, int quad){
 int nextquad(){
     return quadruplesTableIndex;
 }
+
+// Function to write Quadruples table to a file
+void writeQuadruplesToFile(const char *filename, Quadruple *quadruplesTable, int size) {
+    FILE *file = fopen(filename, "a");  // Open the file in append mode
+
+    if (file == NULL) {
+        perror("Error opening the file");
+        return;
+    }
+
+    fprintf(file, "______ALGORITMO COMPILADO______\n");
+
+    for (int i = 0; i < size; ++i) {
+        if (quadruplesTable[i].operator == NombreOperadores.O_SUMA) {
+            fprintf(file, "%s := %s + %s\n", 
+                            symbolTable[quadruplesTable[i].result].name, 
+                            symbolTable[quadruplesTable[i].operand2].name, 
+                            symbolTable[quadruplesTable[i].result].name);
+           
+        } else if (quadruplesTable[i].operator == NombreOperadores.O_RESTA) {
+            fprintf(file, "%s := %s - %s\n", 
+                            symbolTable[quadruplesTable[i].result].name, 
+                            symbolTable[quadruplesTable[i].operand2].name, 
+                            symbolTable[quadruplesTable[i].result].name);
+           
+        } else if (quadruplesTable[i].operator == NombreOperadores.O_MUL) {
+            fprintf(file, "%s := %s * %s\n", 
+                            symbolTable[quadruplesTable[i].result].name, 
+                            symbolTable[quadruplesTable[i].operand2].name, 
+                            symbolTable[quadruplesTable[i].result].name);
+           
+        } else if (quadruplesTable[i].operator == NombreOperadores.O_DIVISION) {
+            fprintf(file, "%s := %s / %s\n", 
+                            symbolTable[quadruplesTable[i].result].name, 
+                            symbolTable[quadruplesTable[i].operand2].name, 
+                            symbolTable[quadruplesTable[i].result].name);
+           
+        } else if (quadruplesTable[i].operator == NombreOperadores.O_DIV) {
+            fprintf(file, "%s := %s div %s\n", 
+                            symbolTable[quadruplesTable[i].result].name, 
+                            symbolTable[quadruplesTable[i].operand2].name, 
+                            symbolTable[quadruplesTable[i].result].name);
+           
+        } else if (quadruplesTable[i].operator == NombreOperadores.O_MOD) {
+            fprintf(file, "%s := %s mod %s\n", 
+                            symbolTable[quadruplesTable[i].result].name, 
+                            symbolTable[quadruplesTable[i].operand2].name, 
+                            symbolTable[quadruplesTable[i].result].name);
+           
+        } else if (quadruplesTable[i].operator == NombreOperadores.O_MENOR) {
+            fprintf(file, "%s := %s < %s\n", 
+                            symbolTable[quadruplesTable[i].result].name, 
+                            symbolTable[quadruplesTable[i].operand1].name, 
+                            symbolTable[quadruplesTable[i].operand2].name);
+           
+        } else if (quadruplesTable[i].operator == NombreOperadores.O_MAYOR) {
+            fprintf(file, "%s := %s > %s\n", 
+                            symbolTable[quadruplesTable[i].result].name, 
+                            symbolTable[quadruplesTable[i].operand1].name, 
+                            symbolTable[quadruplesTable[i].operand2].name);
+           
+        } else if (quadruplesTable[i].operator == NombreOperadores.O_MENORI) {
+            fprintf(file, "%s := %s <= %s\n", 
+                            symbolTable[quadruplesTable[i].result].name, 
+                            symbolTable[quadruplesTable[i].operand1].name, 
+                            symbolTable[quadruplesTable[i].operand2].name);
+           
+        } else if (quadruplesTable[i].operator == NombreOperadores.O_MAYORI) {
+            fprintf(file, "%s := %s >= %s\n", 
+                            symbolTable[quadruplesTable[i].result].name, 
+                            symbolTable[quadruplesTable[i].operand1].name, 
+                            symbolTable[quadruplesTable[i].operand2].name);
+           
+        } else if (quadruplesTable[i].operator == NombreOperadores.O_IGUAL) {
+            fprintf(file, "%s := %s == %s\n", 
+                            symbolTable[quadruplesTable[i].result].name, 
+                            symbolTable[quadruplesTable[i].operand1].name, 
+                            symbolTable[quadruplesTable[i].operand2].name);
+           
+        } else if (quadruplesTable[i].operator == NombreOperadores.O_DISTINTO) {
+            fprintf(file, "%s := %s <> %s\n", 
+                            symbolTable[quadruplesTable[i].result].name, 
+                            symbolTable[quadruplesTable[i].operand1].name, 
+                            symbolTable[quadruplesTable[i].operand2].name);
+           
+        } else if (quadruplesTable[i].operator == NombreOperadores.O_GOTO) {
+            fprintf(file, "goto %s\n", 
+                            symbolTable[quadruplesTable[i].result].name);
+           
+        } else if (quadruplesTable[i].operator == NombreOperadores.O_ITOF) {
+            fprintf(file, "%s := itof %s\n", 
+                            symbolTable[quadruplesTable[i].result].name,
+                            symbolTable[quadruplesTable[i].operand1].name);
+
+        } else if (quadruplesTable[i].operator == NombreOperadores.O_FTOI) {
+            fprintf(file, "%s := ftoi %s\n", 
+                            symbolTable[quadruplesTable[i].result].name,
+                            symbolTable[quadruplesTable[i].operand1].name);
+
+        } else if (quadruplesTable[i].operator == NombreOperadores.O_UMENOS) {
+            fprintf(file, "%s := - %s\n", 
+                            symbolTable[quadruplesTable[i].result].name,
+                            symbolTable[quadruplesTable[i].operand1].name);
+
+        } else if (quadruplesTable[i].operator == NombreOperador.O_SII) {
+            fprintf(file, "if %s == %s goto %s\n", 
+                            symbolTable[quadruplesTable[i].operand1].name,
+                            symbolTable[quadruplesTable[i].operand2].name,
+                            symbolTable[quadruplesTable[i].result].name);
+
+        } else if (quadruplesTable[i].operator == NombreOperador.O_SIMAYI) {
+            fprintf(file, "if %s >= %s goto %s\n", 
+                            symbolTable[quadruplesTable[i].operand1].name,
+                            symbolTable[quadruplesTable[i].operand2].name,
+                            symbolTable[quadruplesTable[i].result].name);
+
+        } else if (quadruplesTable[i].operator == NombreOperador.O_SIMENI) {
+            fprintf(file, "if %s <= %s goto %s\n", 
+                            symbolTable[quadruplesTable[i].operand1].name,
+                            symbolTable[quadruplesTable[i].operand2].name,
+                            symbolTable[quadruplesTable[i].result].name);
+
+        } else if (quadruplesTable[i].operator == NombreOperador.O_SIMAY) {
+            fprintf(file, "if %s > %s goto %s\n", 
+                            symbolTable[quadruplesTable[i].operand1].name,
+                            symbolTable[quadruplesTable[i].operand2].name,
+                            symbolTable[quadruplesTable[i].result].name);
+
+        } else if (quadruplesTable[i].operator == NombreOperador.O_SIMEN) {
+            fprintf(file, "if %s < %s goto %s\n", 
+                            symbolTable[quadruplesTable[i].operand1].name,
+                            symbolTable[quadruplesTable[i].operand2].name,
+                            symbolTable[quadruplesTable[i].result].name);
+
+        } else if (quadruplesTable[i].operator == NombreOperador.O_SID) {
+            fprintf(file, "if %s <> %s goto %s\n", 
+                            symbolTable[quadruplesTable[i].operand1].name,
+                            symbolTable[quadruplesTable[i].operand2].name,
+                            symbolTable[quadruplesTable[i].result].name);
+
+        } else if (quadruplesTable[i].operator == NombreOperador.O_ASIGNACION) {
+            fprintf(file, "%s := %s\n", 
+                            symbolTable[quadruplesTable[i].result].name,
+                            symbolTable[quadruplesTable[i].operand1].name);
+        } else {
+            fprintf(file, "Unknown quadruple\n");
+            fprintf(file, "%d %d %d %d\n", 
+                            quadruplesTable[i].operator,
+                            quadruplesTable[i].operand1,
+                            quadruplesTable[i].operand2,
+                            quadruplesTable[i].result);
+        }	
+
+    fclose(file);
+}

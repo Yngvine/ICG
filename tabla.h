@@ -14,10 +14,10 @@ typedef struct SymbolEntry {
 } SymbolEntry;
 
 typedef struct Quadruple {
-    int operator[MAX_OPERATOR_LENGTH];
-    int operand1[MAX_OPERAND_LENGTH];
-    int operand2[MAX_OPERAND_LENGTH];
-    int result[MAX_OPERAND_LENGTH];
+    int operator;
+    int operand1;
+    int operand2;
+    int result;
 } Quadruple;
 
 SymbolEntry symbolTable[MAX_SYMBOLS];
