@@ -60,6 +60,12 @@ void inicializar_lista_id(ListaId_T* ListaId_T){
     ListaId_T->size = 0;
 }
 
+void concatenar_lista_id(ListaId_T* ListaId_T1, ListaId_T* ListaId_T2){
+    for (int i = 0; i < ListaId_T2->size; ++i) {
+        anhadir_a_lista_id(ListaId_T2->ids[i].id, ListaId_T1);
+    }
+}
+
 void liberar_lista_id(ListaId_T* ListaId_T){
     ListaId_T->size = 0;
 }

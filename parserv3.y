@@ -58,7 +58,7 @@ extern FILE* yyin;
 /*acciones y funciones*/
 %token TK_ACCION TK_FACCION TK_FUNCION TK_DEV TK_FFUNCION TK_ENTRADA_SALIDA
 
-%type<paraListaId> lista_id
+%type<paraListaId> lista_id, lista_d_var
 %type<paraNombreTipo> d_tipo
 %type<paraSymbolEntry> exp_a, expresion, operando, operando_b
 %type<paraBooleano> exp_b
@@ -97,7 +97,7 @@ declaracion_tipo: TK_TIPO lista_d_tipo TK_FTIPO TK_SECUENCIAL{;};
 
 declaracion_cte: TK_CONST lista_d_cte TK_FCONST TK_SECUENCIAL{;};
 
-declaracion_var: TK_VAR lista_d_var TK_FVAR TK_SECUENCIAL{;};
+declaracion_var: TK_VAR lista_d_var TK_FVAR TK_SECUENCIAL{ liberar_lista_id(&$2);};
 
 /*Seccion declaraciones de tipo*/
 
@@ -131,20 +131,23 @@ lista_d_cte: TK_IDENTIFICADOR TK_CREACION_TIPO TK_LITERAL_BOOLEANO TK_SECUENCIAL
            ;
 lista_d_var: lista_id TK_DEFINICION_TIPO d_tipo TK_SECUENCIAL lista_d_var
              {
-                volcar_lista_id($1,$3);
+                volcar_lista_id(&$1, $3);
+                inicializar_lista_id(&$$);
+                concatenar_lista_id(&$$, &$1);
+                concatenar_lista_id(&$$, &$5);
              }
            | {;}
            ;
 
 lista_id: TK_IDENTIFICADOR TK_SEPARADOR lista_id
         {
-                anhadir_a_lista_id($1,$3);
+                anhadir_a_lista_id($1, &$3);
                 $$ = $3;
         }
         | TK_IDENTIFICADOR 
         {
-                inicializar_lista_id($$);
-                anhadir_a_lista_id($1,$$);
+                inicializar_lista_id(&$$);
+                anhadir_a_lista_id($1, &$$);
         };
 
 decl_ent_sal: decl_ent {;}
@@ -152,9 +155,19 @@ decl_ent_sal: decl_ent {;}
             | decl_salida{;}
             ;
 
-decl_ent: TK_ENTRADA lista_d_var{;};
+decl_ent: TK_ENTRADA lista_d_var{
+        for (int i = 0; i < $2.size; i++) {
+               gen(NombreOperadores.O_ENTRADA, , , lookup_symbol_idx(lookup_symbol($2.ids[i]))); 
+        }
+        liberar_lista_id(&$2);
+        };
 
-decl_salida: TK_SALIDA lista_d_var{;};
+decl_salida: TK_SALIDA lista_d_var{
+        for (int i = 0; i < $2.size; i++) {
+               back_gen(NombreOperadores.O_SALIDA, , , lookup_symbol_idx(lookup_symbol($2.ids[i]))); 
+        }
+        liberar_lista_id(&$2);
+        };
 
 /* Seccion expresiones*/
 
