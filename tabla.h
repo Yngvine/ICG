@@ -20,12 +20,12 @@ typedef struct Quadruple {
     int result;
 } Quadruple;
 
-SymbolEntry symbolTable[MAX_SYMBOLS];
-Quadruple quadruplesTable[MAX_QUADRUPLES];
+extern SymbolEntry symbolTable[];
+extern Quadruple quadruplesTable[];
 
-int symbolTableIndex = 0; // Keep track of the current index in symbolTable
-int quadruplesTableIndex = 0; // Keep track of the current index in quadruplesTable
-int tempVarIndex = 0;
+extern int symbolTableIndex; // Keep track of the current index in symbolTable
+extern int quadruplesTableIndex; // Keep track of the current index in quadruplesTable
+extern int tempVarIndex;
 
 void add_to_symbol_table(char* , int );
 

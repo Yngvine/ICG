@@ -1,6 +1,15 @@
 #include "tabla.h"
 #include <stdlib.h>
 
+#include "tabla.h"
+
+SymbolEntry symbolTable[MAX_SYMBOLS];
+Quadruple quadruplesTable[MAX_QUADRUPLES];
+
+int symbolTableIndex = 0; // Keep track of the current index in symbolTable
+int quadruplesTableIndex = 0; // Keep track of the current index in quadruplesTable
+int tempVarIndex = 0;
+
 void add_to_symbol_table(char* name, int type) {
     if (symbolTableIndex < MAX_SYMBOLS) {
         SymbolEntry* newSymbol = &symbolTable[symbolTableIndex++];
