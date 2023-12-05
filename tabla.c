@@ -113,41 +113,43 @@ void writeQuadruplesToFile(const char *filename, Quadruple *quadruplesTable, int
 
     for (int i = 0; i < size; ++i) {
 
+        fprintf(file, "%d: ", i);
+
         if (quadruplesTable[i].operator == O_SUMA) {
             fprintf(file, "%s := %s + %s\n", 
                             symbolTable[quadruplesTable[i].result].name, 
-                            symbolTable[quadruplesTable[i].operand2].name, 
-                            symbolTable[quadruplesTable[i].result].name);
+                            symbolTable[quadruplesTable[i].operand1].name, 
+                            symbolTable[quadruplesTable[i].operand2].name);
            
         } else if (quadruplesTable[i].operator == O_RESTA) {
             fprintf(file, "%s := %s - %s\n", 
                             symbolTable[quadruplesTable[i].result].name, 
-                            symbolTable[quadruplesTable[i].operand2].name, 
-                            symbolTable[quadruplesTable[i].result].name);
+                            symbolTable[quadruplesTable[i].operand1].name, 
+                            symbolTable[quadruplesTable[i].operand2].name);
            
         } else if (quadruplesTable[i].operator == O_MUL) {
             fprintf(file, "%s := %s * %s\n", 
                             symbolTable[quadruplesTable[i].result].name, 
-                            symbolTable[quadruplesTable[i].operand2].name, 
-                            symbolTable[quadruplesTable[i].result].name);
+                            symbolTable[quadruplesTable[i].operand1].name, 
+                            symbolTable[quadruplesTable[i].operand2].name);
            
         } else if (quadruplesTable[i].operator == O_DIVISION) {
             fprintf(file, "%s := %s / %s\n", 
                             symbolTable[quadruplesTable[i].result].name, 
-                            symbolTable[quadruplesTable[i].operand2].name, 
-                            symbolTable[quadruplesTable[i].result].name);
+                            symbolTable[quadruplesTable[i].operand1].name, 
+                            symbolTable[quadruplesTable[i].operand2].name);
            
         } else if (quadruplesTable[i].operator == O_DIV) {
             fprintf(file, "%s := %s div %s\n", 
                             symbolTable[quadruplesTable[i].result].name, 
-                            symbolTable[quadruplesTable[i].operand2].name, 
-                            symbolTable[quadruplesTable[i].result].name);
+                            symbolTable[quadruplesTable[i].operand1].name, 
+                            symbolTable[quadruplesTable[i].operand2].name);
            
         } else if (quadruplesTable[i].operator == O_MOD) {
             fprintf(file, "%s := %s mod %s\n", 
-                            symbolTable[quadruplesTable[i].result].name, 
-                            symbolTable[quadruplesTable[i].operand2].name, 
-                            symbolTable[quadruplesTable[i].result].name);
+                            symbolTable[quadruplesTable[i].result].name,
+                            symbolTable[quadruplesTable[i].operand1].name,
+                            symbolTable[quadruplesTable[i].operand2].name);
            
         } else if (quadruplesTable[i].operator == O_MENOR) {
             fprintf(file, "%s := %s < %s\n", 
@@ -186,8 +188,8 @@ void writeQuadruplesToFile(const char *filename, Quadruple *quadruplesTable, int
                             symbolTable[quadruplesTable[i].operand2].name);
            
         } else if (quadruplesTable[i].operator == O_GOTO) {
-            fprintf(file, "goto %s\n", 
-                            symbolTable[quadruplesTable[i].result].name);
+            fprintf(file, "goto %d\n", 
+                            quadruplesTable[i].result);
            
         } else if (quadruplesTable[i].operator == O_ITOF) {
             fprintf(file, "%s := itof %s\n", 
@@ -274,3 +276,14 @@ void volcar_lista_id_a_tabla(ListaId_T* ListaId_T, NombreTipo tipo){
         add_to_symbol_table(ListaId_T->ids[i], tipo);
     }
 }
+
+void error(){
+    printf("Error\n");
+    //print sybol table
+    for (int i = 0; i < symbolTableIndex; ++i) {
+        printf("%d: %s - %d\n", i, symbolTable[i].name, symbolTable[i].type);
+    }
+
+    exit(EXIT_FAILURE);
+}
+

@@ -15,7 +15,7 @@ typedef struct ListaId_T {
 }ListaId_T;
 
 typedef enum {
-    T_ENTERO = 0,
+    T_ENTERO = 5,
     T_REAL = 1,
     T_BOOLEANO = 2,
     T_CADENA = 3,
@@ -81,7 +81,6 @@ void liberar_lista_id(ListaId_T* );
 
 bool esta_lista_id_vacia(ListaId_T* );
 
-void error();
 
 
 

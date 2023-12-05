@@ -51,4 +51,7 @@ int nextquad();
 void writeQuadruplesToFile(const char*, Quadruple*, int);
 
 void volcar_lista_id_a_tabla(ListaId_T*, NombreTipo);
+
+void error();
+
 #endif //TABLA_H

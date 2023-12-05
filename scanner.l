@@ -2,6 +2,7 @@
 
 %{
 #include "tabla.h"
+#include "commons.h"
 #include <string.h>
 #include "parserv3.tab.h"
 %}
@@ -173,17 +174,17 @@ OP_COMPARADOR {COMP_IGUALDAD}|{COMP_DIFERENCIA}|{COMP_MENOR_IGUAL}|{COMP_MAYOR_I
 {O}                             {return TK_O ;}
 {NEGACION}                      {return TK_NO ;}
 
-{NT_ENTERO}                     {yylval.paraNombreTipo = 0;
+{NT_ENTERO}                     {yylval.paraNombreTipo = T_ENTERO;
                                  return TK_TIPOBASE;}
-{NT_REAL}                       {yylval.paraNombreTipo = 1;
+{NT_REAL}                       {yylval.paraNombreTipo = T_REAL;
                                  return TK_TIPOBASE;}
-{NT_BOOLEANO}                   {yylval.paraNombreTipo = 2;
+{NT_BOOLEANO}                   {yylval.paraNombreTipo = T_BOOLEANO;
                                  return TK_TIPOBASE;}
-{NT_CADENA}                     {yylval.paraNombreTipo = 3;
+{NT_CADENA}                     {yylval.paraNombreTipo = T_CADENA;
                                  return TK_TIPOBASE;}
-{NT_CARACTER}                   {yylval.paraNombreTipo = 4;
+{NT_CARACTER}                   {yylval.paraNombreTipo = T_CARACTER;
                                  return TK_TIPOBASE;}
-{NT_TABLA}                      {yylval.paraNombreTipo = 5;
+{NT_TABLA}                      {yylval.paraNombreTipo = 6;
                                  return TK_TIPOBASE;}
 
 {TIPO}                          {return TK_TIPO ;}

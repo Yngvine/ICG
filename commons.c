@@ -76,7 +76,3 @@ bool esta_lista_id_vacia(ListaId_T* ListaId_T){
     return ListaId_T->size == 0;
 }
 
-void error(){
-    printf("Error\n");
-    exit(EXIT_FAILURE);
-}

@@ -115,7 +115,7 @@ d_tipo: TK_TUPLA lista_campos TK_FTUPLA{;}
       | TK_IDENTIFICADOR{;}
       | expresion_t TK_SUBRANGO expresion_t{;}
       | TK_REF d_tipo{;}
-      | TK_TIPOBASE{$$=$1;} /*ojo ojimetro al tipo base, igual hay que hacer fijfushfiuahsfu*/
+      | TK_TIPOBASE{$$=$1;}
       ;
 
 expresion_t: expresion{;}
@@ -363,7 +363,7 @@ exp_b: exp_b TK_Y M exp_b{
      }
      ;
 M:{$$.quad = nextquad(); };
-operando: TK_IDENTIFICADOR{lookup_symbol($1);}
+operando: TK_IDENTIFICADOR{$$ = lookup_symbol($1);}
           | operando TK_PUNTO operando {;}
           | operando TK_INICIO_ARRAY expresion TK_FINAL_ARRAY{;}
           | operando TK_REF{;}
@@ -385,7 +385,8 @@ instruccion: TK_CONTINUAR{;}
            ;
 
 asignacion: operando TK_ASIGNACION expresion
-        {if(consulta_tipo_TS($1->name) == $3->type){
+        {
+        if(consulta_tipo_TS($1->name) == $3->type){
                 gen(O_ASIGNACION, lookup_symbol_idx($3), -1, lookup_symbol_idx($1));
         }
         else if(consulta_tipo_TS($1->name) == T_REAL && $3->type == T_ENTERO){
