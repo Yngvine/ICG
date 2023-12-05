@@ -7,9 +7,7 @@
 #define MAX_ID_LENGTH 50
 #define MAX_LIST_SIZE 100
 
-typedef struct {
-    char id[MAX_ID_LENGTH];
-}ID;
+typedef char ID[MAX_ID_LENGTH];
 
 typedef struct ListaId_T {
     ID ids[MAX_LIST_SIZE];
@@ -64,8 +62,8 @@ typedef struct emanem{
 } emanem;
 
 typedef struct booleano{
-    quadList FALSE;
-    quadList TRUE;
+    quadList* FALSE;
+    quadList* TRUE;
 } Booleano;
 
 quadList* makeList(int );
@@ -77,9 +75,14 @@ void anhadir_a_lista_id(char* id, ListaId_T* );
 
 void inicializar_lista_id(ListaId_T* );
 
+void concatenar_lista_id(ListaId_T* , ListaId_T* );
+
 void liberar_lista_id(ListaId_T* );
 
 bool esta_lista_id_vacia(ListaId_T* );
+
+void error();
+
 
 
 #endif //COMMONS_H

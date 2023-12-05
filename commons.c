@@ -49,7 +49,7 @@ void freeList(quadList* list){
 
 void anhadir_a_lista_id(char* id, ListaId_T* ListaId_T){
     if (ListaId_T->size < MAX_LIST_SIZE) {
-        strcpy(ListaId_T->ids[ListaId_T->size++].id, id);
+        strcpy(ListaId_T->ids[ListaId_T->size++], id);
     } else {
         // Handle error: list is full
         fprintf(stderr, "String list is full\n");
@@ -64,7 +64,7 @@ void inicializar_lista_id(ListaId_T* ListaId_T){
 
 void concatenar_lista_id(ListaId_T* ListaId_T1, ListaId_T* ListaId_T2){
     for (int i = 0; i < ListaId_T2->size; ++i) {
-        anhadir_a_lista_id(ListaId_T2->ids[i].id, ListaId_T1);
+        anhadir_a_lista_id(ListaId_T2->ids[i], ListaId_T1);
     }
 }
 
@@ -74,4 +74,9 @@ void liberar_lista_id(ListaId_T* ListaId_T){
 
 bool esta_lista_id_vacia(ListaId_T* ListaId_T){
     return ListaId_T->size == 0;
+}
+
+void error(){
+    printf("Error\n");
+    exit(EXIT_FAILURE);
 }

@@ -34,6 +34,8 @@ SymbolEntry* lookup_symbol(char*);
 
 int lookup_symbol_idx(SymbolEntry*);
 
+NombreTipo consulta_tipo_TS(char*);
+
 SymbolEntry* newTemp();
 
 void gen(int , int , int , int );
@@ -42,9 +44,11 @@ void cleanup_symbol_table();
 
 void cleanup_quadruples_table();
 
-void backpacht(quadList*, int);
+void backpatch(quadList*, int);
 
 int nextquad();
 
-void volcar_lista_id_a_tabla(ListaId_T*, NombreTipo)
+void writeQuadruplesToFile(const char*, Quadruple*, int);
+
+void volcar_lista_id_a_tabla(ListaId_T*, NombreTipo);
 #endif //TABLA_H

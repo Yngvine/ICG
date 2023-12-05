@@ -1,5 +1,6 @@
 %{
 #include "tabla.h"
+#include "commons.h"
 #include <ctype.h>
 #include <stdio.h>
 
@@ -114,7 +115,7 @@ d_tipo: TK_TUPLA lista_campos TK_FTUPLA{;}
       | TK_IDENTIFICADOR{;}
       | expresion_t TK_SUBRANGO expresion_t{;}
       | TK_REF d_tipo{;}
-      | TK_TIPOBASE{$$=$1} /*ojo ojimetro al tipo base, igual hay que hacer fijfushfiuahsfu*/
+      | TK_TIPOBASE{$$=$1;} /*ojo ojimetro al tipo base, igual hay que hacer fijfushfiuahsfu*/
       ;
 
 expresion_t: expresion{;}
@@ -135,7 +136,7 @@ lista_d_cte: TK_IDENTIFICADOR TK_CREACION_TIPO TK_LITERAL_BOOLEANO TK_SECUENCIAL
            ;
 lista_d_var: lista_id TK_DEFINICION_TIPO d_tipo TK_SECUENCIAL lista_d_var
              {
-                volcar_lista_id(&$1, $3);
+                volcar_lista_id_a_tabla(&$1, $3);
                 inicializar_lista_id(&$$);
                 concatenar_lista_id(&$$, &$1);
                 concatenar_lista_id(&$$, &$5);
@@ -161,14 +162,14 @@ decl_ent_sal: decl_ent {;}
 
 decl_ent: TK_ENTRADA lista_d_var{
         for (int i = 0; i < $2.size; i++) {
-               gen(O_ENTRADA, , , lookup_symbol_idx(lookup_symbol($2.ids[i]))); 
+               gen(O_ENTRADA, -1, -1, lookup_symbol_idx(lookup_symbol($2.ids[i]))); 
         }
         liberar_lista_id(&$2);
         };
 
 decl_salida: TK_SALIDA lista_d_var{
         for (int i = 0; i < $2.size; i++) {
-               gen(O_SALIDA, , , lookup_symbol_idx(lookup_symbol($2.ids[i]))); 
+               gen(O_SALIDA, -1, -1, lookup_symbol_idx(lookup_symbol($2.ids[i]))); 
         }
         liberar_lista_id(&$2);
         };
@@ -183,119 +184,119 @@ expresion: exp_a{$$=$1;}
 
 exp_a: exp_a TK_SUMA exp_a{
         SymbolEntry* t = newTemp();
-        if ($1->type == paraNombreTipo.T_ENTERO && $3->type == paraNombreTipo.T_ENTERO) {
-                t->type = paraNombreTipo.T_ENTERO;
-                gen(O_SUMA, lookup_symbol_idx(*$1), lookup_symbol_idx(*$3), lookup_symbol_idx(*t));
+        if ($1->type == T_ENTERO && $3->type == T_ENTERO) {
+                t->type = T_ENTERO;
+                gen(O_SUMA, lookup_symbol_idx($1), lookup_symbol_idx($3), lookup_symbol_idx(t));
                 $$ = t;
         }
-        else if($1->type == paraNombreTipo.T_ENTERO && $3->type == paraNombreTipo.T_REAL){
-                t->type = paraNombreTipo.T_REAL;
-                gen(O_ITOF, lookup_symbol_idx(*$1), , lookup_symbol_idx(*t));
-                gen(O_SUMA, lookup_symbol_idx(*t), lookup_symbol_idx(*$3), lookup_symbol_idx(*t));
+        else if($1->type == T_ENTERO && $3->type == T_REAL){
+                t->type = T_REAL;
+                gen(O_ITOF, lookup_symbol_idx($1), -1, lookup_symbol_idx(t));
+                gen(O_SUMA, lookup_symbol_idx(t), lookup_symbol_idx($3), lookup_symbol_idx(t));
                 $$ = t;
         }
-        else if($1->type == paraNombreTipo.T_REAL && $3->type == paraNombreTipo.T_ENTERO){
-                t->type = paraNombreTipo.T_REAL;
-                gen(O_ITOF, lookup_symbol_idx(*$3), , lookup_symbol_idx(*t));
-                gen(O_SUMA, lookup_symbol_idx(*t), lookup_symbol_idx(*$1), lookup_symbol_idx(*t));
+        else if($1->type == T_REAL && $3->type == T_ENTERO){
+                t->type = T_REAL;
+                gen(O_ITOF, lookup_symbol_idx($3), -1, lookup_symbol_idx(t));
+                gen(O_SUMA, lookup_symbol_idx(t), lookup_symbol_idx($1), lookup_symbol_idx(t));
                 $$ = t;
         }
-        else if($1->type == paraNombreTipo.T_REAL && $3->type == paraNombreTipo.T_REAL){
-                t->type = paraNombreTipo.T_REAL;
-                gen(O_SUMA, lookup_symbol_idx(*$1), lookup_symbol_idx(*$3), lookup_symbol_idx(*t));
+        else if($1->type == T_REAL && $3->type == T_REAL){
+                t->type = T_REAL;
+                gen(O_SUMA, lookup_symbol_idx($1), lookup_symbol_idx($3), lookup_symbol_idx(t));
                 $$ = t;
         }
         }
      | exp_a TK_RESTA exp_a{
         SymbolEntry* t = newTemp();
-        if ($1->type == paraNombreTipo.T_ENTERO && $3->type == paraNombreTipo.T_ENTERO) {
-                t->type = paraNombreTipo.T_ENTERO;
-                gen(O_RESTA, lookup_symbol_idx(*$1), lookup_symbol_idx(*$3), lookup_symbol_idx(*t));
+        if ($1->type == T_ENTERO && $3->type == T_ENTERO) {
+                t->type = T_ENTERO;
+                gen(O_RESTA, lookup_symbol_idx($1), lookup_symbol_idx($3), lookup_symbol_idx(t));
                 $$ = t;
 
-        } else if ($1->type == paraNombreTipo.T_ENTERO && $3->type == paraNombreTipo.T_REAL) {
-                t->type = paraNombreTipo.T_REAL;
-                gen(O_FTOI, lookup_symbol_idx(*$1), , lookup_symbol_idx(*t));
-                gen(O_RESTA, lookup_symbol_idx(*t), lookup_symbol_idx(*$3), lookup_symbol_idx(*t));
+        } else if ($1->type == T_ENTERO && $3->type == T_REAL) {
+                t->type = T_REAL;
+                gen(O_FTOI, lookup_symbol_idx($1), -1, lookup_symbol_idx(t));
+                gen(O_RESTA, lookup_symbol_idx(t), lookup_symbol_idx($3), lookup_symbol_idx(t));
                 $$ = t;
 
-        } else if ($1->type == paraNombreTipo.T_REAL && $3->type == paraNombreTipo.T_ENTERO) {
-                t->type = paraNombreTipo.T_REAL;
-                gen(O_ITOF, lookup_symbol_idx(*$3), , lookup_symbol_idx(*t));
-                gen(O_RESTA, lookup_symbol_idx(*t), lookup_symbol_idx(*$1), lookup_symbol_idx(*t));
+        } else if ($1->type == T_REAL && $3->type == T_ENTERO) {
+                t->type = T_REAL;
+                gen(O_ITOF, lookup_symbol_idx($3), -1, lookup_symbol_idx(t));
+                gen(O_RESTA, lookup_symbol_idx(t), lookup_symbol_idx($1), lookup_symbol_idx(t));
                 $$ = t;
 
-        } else if ($1->type == paraNombreTipo.T_REAL && $3->type == paraNombreTipo.T_REAL) {
-                t->type = paraNombreTipo.T_REAL;
-                gen(O_RESTA, lookup_symbol_idx(*$1), lookup_symbol_idx(*$3), lookup_symbol_idx(*t));
+        } else if ($1->type == T_REAL && $3->type == T_REAL) {
+                t->type = T_REAL;
+                gen(O_RESTA, lookup_symbol_idx($1), lookup_symbol_idx($3), lookup_symbol_idx(t));
                 $$ = t;
         }
      };
      | exp_a TK_PRODUCTO exp_a{
         SymbolEntry* t = newTemp();
-        if ($1->type == paraNombreTipo.T_ENTERO && $3->type == paraNombreTipo.T_ENTERO) {
-                t->type = paraNombreTipo.T_ENTERO;
-                gen(O_MUL, lookup_symbol_idx(*$1), lookup_symbol_idx(*$3), lookup_symbol_idx(*t));
+        if ($1->type == T_ENTERO && $3->type == T_ENTERO) {
+                t->type = T_ENTERO;
+                gen(O_MUL, lookup_symbol_idx($1), lookup_symbol_idx($3), lookup_symbol_idx(t));
                 $$ = t;
 
-        } else if ($1->type == paraNombreTipo.T_ENTERO && $3->type == paraNombreTipo.T_REAL) {
-                t->type = paraNombreTipo.T_REAL;
-                gen(O_ITOF, lookup_symbol_idx(*$1), , lookup_symbol_idx(*t));
-                gen(O_MUL, lookup_symbol_idx(*t), lookup_symbol_idx(*$3), lookup_symbol_idx(*t));
+        } else if ($1->type == T_ENTERO && $3->type == T_REAL) {
+                t->type = T_REAL;
+                gen(O_ITOF, lookup_symbol_idx($1), -1, lookup_symbol_idx(t));
+                gen(O_MUL, lookup_symbol_idx(t), lookup_symbol_idx($3), lookup_symbol_idx(t));
                 $$ = t;
 
-        } else if ($1->type == paraNombreTipo.T_REAL && $3->type == paraNombreTipo.T_ENTERO) {
-                t->type = paraNombreTipo.T_REAL;
-                gen(O_ITOF, lookup_symbol_idx(*$3), , lookup_symbol_idx(*t));
-                gen(O_MUL, lookup_symbol_idx(*t), lookup_symbol_idx(*$1), lookup_symbol_idx(*t));
+        } else if ($1->type == T_REAL && $3->type == T_ENTERO) {
+                t->type = T_REAL;
+                gen(O_ITOF, lookup_symbol_idx($3), -1, lookup_symbol_idx(t));
+                gen(O_MUL, lookup_symbol_idx(t), lookup_symbol_idx($1), lookup_symbol_idx(t));
                 $$ = t;
 
-        } else if ($1->type == paraNombreTipo.T_REAL && $3->type == paraNombreTipo.T_REAL) {
-                t->type = paraNombreTipo.T_REAL;
-                gen(O_MUL, lookup_symbol_idx(*$1), lookup_symbol_idx(*$3), lookup_symbol_idx(*t));
+        } else if ($1->type == T_REAL && $3->type == T_REAL) {
+                t->type = T_REAL;
+                gen(O_MUL, lookup_symbol_idx($1), lookup_symbol_idx($3), lookup_symbol_idx(t));
                 $$ = t;
         }
      }
      | exp_a TK_DIVISION exp_a{
         SymbolEntry* t = newTemp();
-        if  ($1->type == paraNombreTipo.T_ENTERO && $3->type == paraNombreTipo.T_ENTERO) {
-                t->type = paraNombreTipo.T_ENTERO;
-                gen(O_DIVISION, lookup_symbol_idx(*$1), lookup_symbol_idx(*$3), lookup_symbol_idx(*t));
+        if  ($1->type == T_ENTERO && $3->type == T_ENTERO) {
+                t->type = T_ENTERO;
+                gen(O_DIVISION, lookup_symbol_idx($1), lookup_symbol_idx($3), lookup_symbol_idx(t));
                 $$ = t;
 
-        } else if ($1->type == paraNombreTipo.T_ENTERO && $3->type == paraNombreTipo.T_REAL) {
-                t->type = paraNombreTipo.T_REAL;
-                gen(O_ITOF, lookup_symbol_idx(*$1), , lookup_symbol_idx(*t));
-                gen(O_DIVISION, lookup_symbol_idx(*t), lookup_symbol_idx(*$3), lookup_symbol_idx(*t));
+        } else if ($1->type == T_ENTERO && $3->type == T_REAL) {
+                t->type = T_REAL;
+                gen(O_ITOF, lookup_symbol_idx($1), -1, lookup_symbol_idx(t));
+                gen(O_DIVISION, lookup_symbol_idx(t), lookup_symbol_idx($3), lookup_symbol_idx(t));
                 $$ = t;
 
-        } else if ($1->type == paraNombreTipo.T_REAL && $3->type == paraNombreTipo.T_ENTERO) {
-                t->type = paraNombreTipo.T_REAL;
-                gen(O_ITOF, lookup_symbol_idx(*$3), , lookup_symbol_idx(*t));
-                gen(O_DIVISION, lookup_symbol_idx(*t), lookup_symbol_idx(*$1), lookup_symbol_idx(*t));
+        } else if ($1->type == T_REAL && $3->type == T_ENTERO) {
+                t->type = T_REAL;
+                gen(O_ITOF, lookup_symbol_idx($3), -1, lookup_symbol_idx(t));
+                gen(O_DIVISION, lookup_symbol_idx(t), lookup_symbol_idx($1), lookup_symbol_idx(t));
                 $$ = t;
 
-        } else if ($1->type == paraNombreTipo.T_REAL && $3->type == paraNombreTipo.T_REAL) {
-                t->type = paraNombreTipo.T_REAL;
-                gen(O_DIVISION, lookup_symbol_idx(*$1), lookup_symbol_idx(*$3), lookup_symbol_idx(*t));
+        } else if ($1->type == T_REAL && $3->type == T_REAL) {
+                t->type = T_REAL;
+                gen(O_DIVISION, lookup_symbol_idx($1), lookup_symbol_idx($3), lookup_symbol_idx(t));
                 $$ = t;
         }
         }
      | exp_a TK_MODULO exp_a{
-        if ($1->type == paraNombreTipo.T_ENTERO && $3->type == paraNombreTipo.T_ENTERO) {
+        if ($1->type == T_ENTERO && $3->type == T_ENTERO) {
                 SymbolEntry* t = newTemp();
-                t->type = paraNombreTipo.T_ENTERO;
-                gen(O_MOD, lookup_symbol_idx(*$1), lookup_symbol_idx(*$3), lookup_symbol_idx(*t));
+                t->type = T_ENTERO;
+                gen(O_MOD, lookup_symbol_idx($1), lookup_symbol_idx($3), lookup_symbol_idx(t));
                 $$ = t;
         } else {
                 error();
         }
        }
      | exp_a TK_DIV exp_a{
-        if ($1->type == paraNombreTipo.T_ENTERO && $3->type == paraNombreTipo.T_ENTERO) {
+        if ($1->type == T_ENTERO && $3->type == T_ENTERO) {
                 SymbolEntry* t = newTemp();
-                t->type = paraNombreTipo.T_ENTERO;
-                gen(O_DIV, lookup_symbol_idx(*$1), lookup_symbol_idx(*$3), lookup_symbol_idx(*t));
+                t->type = T_ENTERO;
+                gen(O_DIV, lookup_symbol_idx($1), lookup_symbol_idx($3), lookup_symbol_idx(t));
                 $$ = t;
         } else {
                 error();
@@ -308,7 +309,7 @@ exp_a: exp_a TK_SUMA exp_a{
         // no hay inversion de valor real
         SymbolEntry* t = newTemp();
         t->type = $2->type;
-        gen(UMENOS, lookup_symbol_idx(*$2), , lookup_symbol_idx(*t));
+        gen(UMENOS, lookup_symbol_idx($2), -1, lookup_symbol_idx(t));
         $$ = t;
      }
      ;
@@ -318,47 +319,47 @@ exp_a: exp_a TK_SUMA exp_a{
  
 exp_b: exp_b TK_Y M exp_b{
         backpatch($1.FALSE, $3.quad);
-        $$.TRUE = *merge(&$1.TRUE, &$3.TRUE);
-        $$.FALSE = $3.FALSE;
+        $$.TRUE = merge($1.TRUE, $4.TRUE);
+        $$.FALSE = $4.FALSE;
      } 
      | exp_b TK_O M exp_b{
         backpatch($1.TRUE, $3.quad);
-        $$.FALSE = *merge(&$1.FALSE, &$3.FALSE);
-        $$.TRUE = $3.TRUE;
+        $$.FALSE = merge($1.FALSE, $4.FALSE);
+        $$.TRUE = $4.TRUE;
      }
      | TK_NO exp_b %prec NEGACION{
         $$.FALSE = $2.TRUE;
         $$.TRUE = $2.FALSE;
      }
      | operando_b{
-        $$.TRUE = *makeList(nextquad());
-        $$.FALSE = *makeList(nextquad()+1);
-        gen(O_SII, lookup_symbol_idx(*$1), 'true', );
-        gen(O_GOTO, , , );
+        $$.TRUE = makeList(nextquad());
+        $$.FALSE = makeList(nextquad()+1);
+        gen(O_SII, lookup_symbol_idx($1), -2, -1);//-2=true
+        gen(O_GOTO, -1, -1, -1);
         }
      | TK_VERDADERO{;} //Literales
      | TK_FALSO{;}     //Literales
      | expresion TK_OPREL expresion{
-        $$.TRUE = *makeList(nextquad());
-        $$.FALSE = *makeList(nextquad()+1);
+        $$.TRUE = makeList(nextquad());
+        $$.FALSE = makeList(nextquad()+1);
         if (TK_OPREL == O_MENOR) {
-                gen(O_SIMEN, lookup_symbol_idx(*$1), lookup_symbol_idx(*$3), );
+                gen(O_SIMEN, lookup_symbol_idx($1), lookup_symbol_idx($3), -1);
         } else if (TK_OPREL == O_MAYOR) {
-                gen(O_SIMAY, lookup_symbol_idx(*$1), lookup_symbol_idx(*$3), );
+                gen(O_SIMAY, lookup_symbol_idx($1), lookup_symbol_idx($3), -1);
         } else if (TK_OPREL == O_MENORI) {
-                gen(O_SIMENI, lookup_symbol_idx(*$1), lookup_symbol_idx(*$3), );
+                gen(O_SIMENI, lookup_symbol_idx($1), lookup_symbol_idx($3), -1);
         } else if (TK_OPREL == O_MAYORI) {
-                gen(O_SIMAYI, lookup_symbol_idx(*$1), lookup_symbol_idx(*$3), );
+                gen(O_SIMAYI, lookup_symbol_idx($1), lookup_symbol_idx($3), -1);
         } else if (TK_OPREL == O_IGUAL) {
-                gen(O_SII, lookup_symbol_idx(*$1), lookup_symbol_idx(*$3), );
+                gen(O_SII, lookup_symbol_idx($1), lookup_symbol_idx($3), -1);
         } else if (TK_OPREL == O_DISTINTO) {
-                gen(O_SID, lookup_symbol_idx(*$1), lookup_symbol_idx(*$3), );
+                gen(O_SID, lookup_symbol_idx($1), lookup_symbol_idx($3), -1);
         }
-        gen(O_GOTO, , , );
+        gen(O_GOTO, -1, -1, -1);
      }
      | TK_APERTURA_PARENTESIS exp_b TK_CIERRE_PARENTESIS{
-        $$.TRUE = *makeList(nextquad());
-        $$.FALSE = *makeList(nextquad()+1);
+        $$.TRUE = makeList(nextquad());
+        $$.FALSE = makeList(nextquad()+1);
      }
      ;
 M:{$$.quad = nextquad(); };
@@ -368,7 +369,7 @@ operando: TK_IDENTIFICADOR{lookup_symbol($1);}
           | operando TK_REF{;}
           ;
 
-operando_b: TK_IDENTIFICADOR_B{$$ = lookup_symbol($1)};
+operando_b: TK_IDENTIFICADOR_B{$$ = lookup_symbol($1);};
     
 /*Seccion instrucciones*/
 
@@ -384,12 +385,12 @@ instruccion: TK_CONTINUAR{;}
            ;
 
 asignacion: operando TK_ASIGNACION expresion
-        {if(consulta_tipo_TS($1.name) == $3->type){
-                gen(O_ASIGNACION, lookup_symbol_idx($3), , lookup_symbol_idx($1));
+        {if(consulta_tipo_TS($1->name) == $3->type){
+                gen(O_ASIGNACION, lookup_symbol_idx($3), -1, lookup_symbol_idx($1));
         }
-        else if(consulta_tipo_TS($1.name) == T_REAL && $3->type == T_ENTERO){
-                gen(O_ITOF, lookup_symbol_idx($3), , lookup_symbol_idx($3));
-                gen(O_ASIGNACION, lookup_symbol_idx($3), , lookup_symbol_idx($1));
+        else if(consulta_tipo_TS($1->name) == T_REAL && $3->type == T_ENTERO){
+                gen(O_ITOF, lookup_symbol_idx($3), -1, lookup_symbol_idx($3));
+                gen(O_ASIGNACION, lookup_symbol_idx($3), -1, lookup_symbol_idx($1));
         }
         else{
                 error();
@@ -408,7 +409,7 @@ iteracion: it_cota_fija{;}
          ;
 
 it_cota_exp: TK_MIENTRAS M exp_b TK_HACER M instrucciones TK_FMIENTRAS
-           {};
+           {;};
 
 it_cota_fija: TK_PARA TK_IDENTIFICADOR TK_ASIGNACION expresion TK_HASTA expresion TK_HACER instrucciones TK_FPARA{;};
 

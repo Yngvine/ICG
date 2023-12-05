@@ -39,7 +39,7 @@ int lookup_symbol_idx(SymbolEntry* s) {
     return -1; // Entry not found
 }
 
-int consulta_tipo_TS(char* name) {
+NombreTipo consulta_tipo_TS(char* name) {
     for (int i = 0; i < symbolTableIndex; ++i) {
         if (strcmp(symbolTable[i].name, name) == 0) {
             return symbolTable[i].type; // Found the entry
@@ -87,7 +87,7 @@ void cleanup_quadruples_table() {
     quadruplesTableIndex = 0;
 }
 
-void backpacht(quadList* l, int quad){
+void backpatch(quadList* l, int quad){
     for (int i = 0; i < l->size; ++i) {
         quadruplesTable[l->quads[i]].result = quad;
     }   
