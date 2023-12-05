@@ -3,11 +3,9 @@
 
 #include <stdbool.h>
 #include <stdio.h>
-#include "tabla.h"
 
 #define MAX_ID_LENGTH 50
 #define MAX_LIST_SIZE 100
-#define EXIT_FAILURE -1
 
 typedef struct {
     char id[MAX_ID_LENGTH];
@@ -83,6 +81,5 @@ void liberar_lista_id(ListaId_T* );
 
 bool esta_lista_id_vacia(ListaId_T* );
 
-void volcar_lista_id_a_tabla(ListaId_T* , NombreTipo );
 
 #endif //COMMONS_H

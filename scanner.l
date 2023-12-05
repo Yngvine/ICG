@@ -173,41 +173,41 @@ OP_COMPARADOR {COMP_IGUALDAD}|{COMP_DIFERENCIA}|{COMP_MENOR_IGUAL}|{COMP_MAYOR_I
 {O}                             {return TK_O ;}
 {NEGACION}                      {return TK_NO ;}
 
-{NT_ENTERO}                     {yyval.paraNombreTipo = 0;
+{NT_ENTERO}                     {yylval.paraNombreTipo = 0;
                                  return TK_TIPOBASE;}
-{NT_REAL}                       {yyval.paraNombreTipo = 1;
+{NT_REAL}                       {yylval.paraNombreTipo = 1;
                                  return TK_TIPOBASE;}
-{NT_BOOLEANO}                   {yyval.paraNombreTipo = 2;
+{NT_BOOLEANO}                   {yylval.paraNombreTipo = 2;
                                  return TK_TIPOBASE;}
-{NT_CADENA}                     {yyval.paraNombreTipo = 3;
+{NT_CADENA}                     {yylval.paraNombreTipo = 3;
                                  return TK_TIPOBASE;}
-{NT_CARACTER}                   {yyval.paraNombreTipo = 4;
+{NT_CARACTER}                   {yylval.paraNombreTipo = 4;
                                  return TK_TIPOBASE;}
-{NT_TABLA}                      {yyval.paraNombreTipo = 5;
+{NT_TABLA}                      {yylval.paraNombreTipo = 5;
                                  return TK_TIPOBASE;}
 
 {TIPO}                          {return TK_TIPO ;}
 {FTIPO}                         {return TK_FTIPO ;}
 
-{CARACTER}                      {yyval.paraCadena = strdup(yytext);
+{CARACTER}                      {yylval.paraCadena = strdup(yytext);
                                  return TK_LITERAL_CARACTER;}
-{CADENA}                        {yyval.paraCadena = strdup(yytext);
+{CADENA}                        {yylval.paraCadena = strdup(yytext);
                                  return TK_LITERAL_CADENA;}
-{BOOLEANO_VERDADERO}            {yyval.paraBooleano = TRUE;
+{BOOLEANO_VERDADERO}            {//yylval.paraBooleano = TRUE;//Literal
                                  return TK_LITERAL_BOOLEANO;}
-{BOOLEANO_FALSO}                {yyval.paraBooleano = FALSE;
+{BOOLEANO_FALSO}                {//yylval.paraBooleano = FALSE;//Literal
                                  return TK_LITERAL_BOOLEANO;}
-{ENTERO}                        {yyval.paraEntero = atoi(yytext);
+{ENTERO}                        {yylval.paraEntero = atoi(yytext);
                                  return TK_LITERAL_NUMERICO;}
-{DECIMAL}                       {yyval.paraDecimal = atof(yytext);
+{DECIMAL}                       {yylval.paraReal = atof(yytext);
                                  return TK_LITERAL_NUMERICO;}
 
 {COMENTARIO}                    {return TK_COMENTARIO;}
 
-{ID}                            {yyval.paraCadena = strdup(yytext);
+{ID}                            {yylval.paraCadena = strdup(yytext);
                                  return TK_IDENTIFICADOR;}
 
-{BOOL_ID}                       {yyval.paraCadena = strdup(yytext);
+{BOOL_ID}                       {yylval.paraCadena = strdup(yytext);
                                  return TK_IDENTIFICADOR_B;}
 
 .                               {;}

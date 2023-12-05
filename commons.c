@@ -1,5 +1,7 @@
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "commons.h"
 
 
@@ -72,11 +74,4 @@ void liberar_lista_id(ListaId_T* ListaId_T){
 
 bool esta_lista_id_vacia(ListaId_T* ListaId_T){
     return ListaId_T->size == 0;
-}
-
-void volcar_lista_id_a_tabla(ListaId_T* ListaId_T, NombreTipo tipo){
-    ListaId_T aux;
-    for (int i = 0; i < ListaId_T->size; ++i) {
-        add_to_symbol_table(ListaId_T->ids[i], tipo);
-    }
 }

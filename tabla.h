@@ -3,8 +3,9 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include "commons.h"
 
-#define MAX_OPERATOR_LENGTH 50
+#define MAX_IDENTIFIER_LENGTH 50
 #define MAX_QUADRUPLES 100
 #define MAX_SYMBOLS 100
 
@@ -44,4 +45,6 @@ void cleanup_quadruples_table();
 void backpacht(quadList*, int);
 
 int nextquad();
+
+void volcar_lista_id_a_tabla(ListaId_T*, NombreTipo)
 #endif //TABLA_H
