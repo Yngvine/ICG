@@ -5,7 +5,7 @@ sal suma, comb: entero;
 var
 i, a, b, c: entero;
 fvar;
-i:= b;
+i:= a;
 suma:= a;
 comb:= m;
 mientras i <n hacer

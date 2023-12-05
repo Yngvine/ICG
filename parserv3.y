@@ -72,6 +72,8 @@ extern FILE* yyin;
 %type<paraEmanem> it_cota_exp
 %type<paraEmanem> it_cota_fija
 %type<paraEmanem> iteracion
+%type<paraEmanem> instrucciones
+%type<paraEmanem> instruccion
 %%
 
 /*Seccion algoritmos*/
@@ -368,7 +370,7 @@ exp_b: exp_b TK_Y M exp_b{
      ;
 M:{$$.quad = nextquad(); };
 N:{
-        $$.next := makelist(nextquad());
+        $$.next = makeList(nextquad());
         gen(O_GOTO, -1, -1, -1);
  };
 operando: TK_IDENTIFICADOR{$$ = lookup_symbol($1);}
@@ -381,14 +383,15 @@ operando_b: TK_IDENTIFICADOR_B{$$ = lookup_symbol($1);};
     
 /*Seccion instrucciones*/
 
-instrucciones: instruccion TK_SECUENCIAL instrucciones{;}
-             | instruccion{;}
+instrucciones: instruccion TK_SECUENCIAL instrucciones{$$ = $3;}
+             | instruccion{$$.next = makeList(nextquad());
+                           gen(O_GOTO, -1, -1, -1);}
              ;
 
 instruccion: TK_CONTINUAR{;}
            | asignacion{;}
            | alternativa{;}
-           | iteracion{backpatch($1.next.quads, nextquad());}
+           | iteracion{backpatch($1.next, nextquad());}
            | accion_ll{;}
            ;
 
@@ -419,23 +422,31 @@ iteracion: it_cota_fija{$$ = $1;}
 
 it_cota_exp: TK_MIENTRAS M exp_b TK_HACER M instrucciones TK_FMIENTRAS
         {
-                backpatch($3.true, $5.quad);
-                if(0 != ($6.next.size)){
+                printf("it_cota_exp\n");
+                backpatch($3.TRUE, $5.quad);
+                printf("it_cota_exp if1\n");
+                printf("it_cota_exp %d\n", $6.next->size);
+                if(0 != ($6.next->size)){
+                        printf("it_cota_exp if\n");
                         backpatch($6.next, $2.quad);
-                }
-                else{
+                } else {
+                        printf("it_cota_exp else\n");
                         gen(O_GOTO,-1,-1, $2.quad);
                 }
-                $$.next:= $3.false;
+                printf("it_cota_exp fin\n");
+                $$.next = $3.FALSE;
         };
 
 it_cota_fija: TK_PARA TK_IDENTIFICADOR TK_ASIGNACION expresion TK_HASTA expresion N TK_HACER M instrucciones TK_FPARA{
+            printf("it_cota_fija\n");
             backpatch($10.next,nextquad());
-            gen(O_SUMA, lookup_symbol_idx($2), "1", lookup_symbol_idx($2));
+            SymbolEntry* t = newTemp();
+            gen(O_INCREMENTO, lookup_symbol_idx(lookup_symbol($2)), -1, lookup_symbol_idx(t));
+            gen(O_ASIGNACION, lookup_symbol_idx(t), -1, lookup_symbol_idx(lookup_symbol($2)));
             gen(O_GOTO, -1, -1, nextquad()+2);
-            gen(TK_ASIGNACION,  lookup_symbol_idx($2), -1, lookup_symbol_idx($4));
-            backpatch($1.next, nextquad());
-            gen(O_SIMEN, lookup_symbol_idx($2), lookup_symbol_idx($6), $9.quad);
+            gen(TK_ASIGNACION,  lookup_symbol_idx(lookup_symbol($2)), -1, lookup_symbol_idx($4));
+            backpatch($7.next, nextquad());
+            gen(O_SIMEN, lookup_symbol_idx(lookup_symbol($2)), lookup_symbol_idx($6), $9.quad);
             $$.next = makeList(nextquad());
             gen(O_GOTO,-1 ,-1 ,-1);
 };

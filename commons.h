@@ -48,6 +48,8 @@ typedef enum {
     O_ASIGNACION = 22,
     O_ENTRADA = 23,
     O_SALIDA = 24,
+    O_SI = 25,
+    O_INCREMENTO = 26,
 } NombreOperadores;
 
 typedef struct quadList{
@@ -57,7 +59,7 @@ typedef struct quadList{
 
 typedef struct emanem{
     int quad;
-    quadList next;
+    quadList* next;
 } emanem;
 
 typedef struct booleano{

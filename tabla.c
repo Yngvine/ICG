@@ -252,7 +252,18 @@ void writeQuadruplesToFile(const char *filename, Quadruple *quadruplesTable, int
                             symbolTable[quadruplesTable[i].result].name);
 
         } else if (quadruplesTable[i].operator == O_SALIDA) {
+            printf("\n");
             outputAuxTable[outputAuxTableIndex++] = quadruplesTable[i];
+
+        } else if (quadruplesTable[i].operator == O_SI) {
+            fprintf(file, "if %s goto %d\n", 
+                            symbolTable[quadruplesTable[i].operand1].name,
+                            quadruplesTable[i].result);
+
+        } else if (quadruplesTable[i].operator == O_INCREMENTO) {
+            fprintf(file, "%s := %s + 1\n", 
+                            symbolTable[quadruplesTable[i].result].name,
+                            symbolTable[quadruplesTable[i].operand1].name);
         } else {
             fprintf(file, "Unknown quadruple\n");
             fprintf(file, "%d %d %d %d\n", 
@@ -261,6 +272,11 @@ void writeQuadruplesToFile(const char *filename, Quadruple *quadruplesTable, int
                             quadruplesTable[i].operand2,
                             quadruplesTable[i].result);
         }
+        fprintf(file, "%d %d %d %d\n", 
+                            quadruplesTable[i].operator,
+                            quadruplesTable[i].operand1,
+                            quadruplesTable[i].operand2,
+                            quadruplesTable[i].result);
     }
     for (int i = 0; i < outputAuxTableIndex; ++i) {
         if (outputAuxTable[i].operator == O_SALIDA) {
