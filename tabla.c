@@ -258,8 +258,7 @@ void writeQuadruplesToFile(const char *filename, Quadruple *quadruplesTable, int
                             quadruplesTable[i].operand1,
                             quadruplesTable[i].operand2,
                             quadruplesTable[i].result);
-        }	
-
+        }
     }
     for (int i = 0; i < outputAuxTableIndex; ++i) {
         if (outputAuxTable[i].operator == O_SALIDA) {

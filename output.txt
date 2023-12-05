@@ -1,0 +1,15 @@
+______ALGORITMO COMPILADO______
+input b
+23 -1 -1 0
+input a
+23 -1 -1 1
+24 -1 -1 0
+24 -1 -1 1
+aux := a
+22 1 -1 4
+a := b
+22 0 -1 1
+b := aux
+22 4 -1 0
+output b
+output a
