@@ -68,6 +68,10 @@ extern FILE* yyin;
 %type<paraSymbolEntry> operando_b
 %type<paraBooleano> exp_b
 %type<paraEmanem> M
+%type<paraEmanem> N
+%type<paraEmanem> it_cota_exp
+%type<paraEmanem> it_cota_fija
+%type<paraEmanem> iteracion
 %%
 
 /*Seccion algoritmos*/
@@ -363,6 +367,10 @@ exp_b: exp_b TK_Y M exp_b{
      }
      ;
 M:{$$.quad = nextquad(); };
+N:{
+        $$.next := makelist(nextquad());
+        gen(O_GOTO, -1, -1, -1);
+ };
 operando: TK_IDENTIFICADOR{$$ = lookup_symbol($1);}
           | operando TK_PUNTO operando {;}
           | operando TK_INICIO_ARRAY expresion TK_FINAL_ARRAY{;}
@@ -380,7 +388,7 @@ instrucciones: instruccion TK_SECUENCIAL instrucciones{;}
 instruccion: TK_CONTINUAR{;}
            | asignacion{;}
            | alternativa{;}
-           | iteracion{;}
+           | iteracion{backpatch($1.next.quads, nextquad());}
            | accion_ll{;}
            ;
 
@@ -405,14 +413,32 @@ lista_opciones: TK_SINO exp_b TK_ENTONCES instrucciones lista_opciones{;}
               | {;}
               ;
 
-iteracion: it_cota_fija{;}
-         | it_cota_exp{;}
+iteracion: it_cota_fija{$$ = $1;}
+         | it_cota_exp{$$ = $1;}
          ;
 
 it_cota_exp: TK_MIENTRAS M exp_b TK_HACER M instrucciones TK_FMIENTRAS
-           {;};
+        {
+                backpatch($3.true, $5.quad);
+                if(0 != ($6.next.size)){
+                        backpatch($6.next, $2.quad);
+                }
+                else{
+                        gen(O_GOTO,-1,-1, $2.quad);
+                }
+                $$.next:= $3.false;
+        };
 
-it_cota_fija: TK_PARA TK_IDENTIFICADOR TK_ASIGNACION expresion TK_HASTA expresion TK_HACER instrucciones TK_FPARA{;};
+it_cota_fija: TK_PARA TK_IDENTIFICADOR TK_ASIGNACION expresion TK_HASTA expresion N TK_HACER M instrucciones TK_FPARA{
+            backpatch($10.next,nextquad());
+            gen(O_SUMA, lookup_symbol_idx($2), "1", lookup_symbol_idx($2));
+            gen(O_GOTO, -1, -1, nextquad()+2);
+            gen(TK_ASIGNACION,  lookup_symbol_idx($2), -1, lookup_symbol_idx($4));
+            backpatch($1.next, nextquad());
+            gen(O_SIMEN, lookup_symbol_idx($2), lookup_symbol_idx($6), $9.quad);
+            $$.next = makeList(nextquad());
+            gen(O_GOTO,-1 ,-1 ,-1);
+};
 
 /*Acciones y funciones*/
 accion_d: TK_ACCION a_cabecera bloque  TK_FACCION{;};

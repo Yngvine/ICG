@@ -57,8 +57,7 @@ typedef struct quadList{
 
 typedef struct emanem{
     int quad;
-    int next[MAX_LIST_SIZE];
-    int size;
+    quadList next;
 } emanem;
 
 typedef struct booleano{
