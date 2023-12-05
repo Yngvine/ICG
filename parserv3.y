@@ -313,12 +313,12 @@ exp_a: exp_a TK_SUMA exp_a{
 
  
 exp_b: exp_b TK_Y M exp_b{
-        backpatch($1.FALSE, M.quad);
+        backpatch($1.FALSE, $3.quad);
         $$.TRUE = *merge(&$1.TRUE, &$3.TRUE);
         $$.FALSE = $2.FALSE;
      } 
      | exp_b TK_O M exp_b{
-        backpatch($1.TRUE, M.quad);
+        backpatch($1.TRUE, $3.quad);
         $$.FALSE = *merge(&$1.FALSE, &$3.FALSE);
         $$.TRUE = $2.TRUE;
      }
@@ -403,7 +403,20 @@ iteracion: it_cota_fija{;}
          | it_cota_exp{;}
          ;
 
-it_cota_exp: TK_MIENTRAS exp_b TK_HACER instrucciones TK_FMIENTRAS{;};
+it_cota_exp: TK_MIENTRAS M exp_b TK_HACER M instrucciones TK_FMIENTRAS
+           {
+                backpatch($3.true, $5.quad);
+                if !(($6.next))
+                {
+                        backpatch($6.next, $2.quad);
+                }
+                else empty($6.next)
+                {
+                        gen(NombreOperadores.O_GOTO, , , $2.quad);
+                }
+                $6.next:= $3.false;
+
+           };
 
 it_cota_fija: TK_PARA TK_IDENTIFICADOR TK_ASIGNACION expresion TK_HASTA expresion TK_HACER instrucciones TK_FPARA{;};
 
