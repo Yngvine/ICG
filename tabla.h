@@ -25,7 +25,8 @@ extern SymbolEntry symbolTable[];
 extern Quadruple quadruplesTable[];
 
 extern int symbolTableIndex; // Keep track of the current index in symbolTable
-extern int quadruplesTableIndex; // Keep track of the current index in quadruplesTable
+extern int quadruplesTableIndex; // Keep track of the current index in quadruplesTable up to outputs
+extern int fullQuadruplesTableIndex; // Keep track of the current index in quadruplesTable
 extern int tempVarIndex;
 
 void add_to_symbol_table(char* , int );

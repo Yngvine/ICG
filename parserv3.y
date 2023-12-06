@@ -80,7 +80,7 @@ extern FILE* yyin;
 
 /*Seccion algoritmos*/
 
-desc_algoritmo: TK_ALGORITMO TK_IDENTIFICADOR TK_SECUENCIAL cabecera_alg bloque_alg TK_FALGORITMO TK_PUNTO{writeQuadruplesToFile("output.txt", quadruplesTable, quadruplesTableIndex);};
+desc_algoritmo: TK_ALGORITMO TK_IDENTIFICADOR TK_SECUENCIAL cabecera_alg bloque_alg TK_FALGORITMO TK_PUNTO{writeQuadruplesToFile("output.txt", quadruplesTable, fullQuadruplesTableIndex);};
 
 cabecera_alg: decl_globales decl_a_f decl_ent_sal TK_COMENTARIO{;};
 

@@ -7,6 +7,7 @@ Quadruple quadruplesTable[MAX_QUADRUPLES];
 
 int symbolTableIndex = 0; // Keep track of the current index in symbolTable
 int quadruplesTableIndex = 0; // Keep track of the current index in quadruplesTable
+int fullQuadruplesTableIndex = 0; // Keep track of the current index in quadruplesTable
 int tempVarIndex = 0;
 
 void add_to_symbol_table(char* name, int type) {
@@ -65,12 +66,27 @@ SymbolEntry* newTemp() {
 
 
 void gen(int op, int operand1, int operand2, int result) {
-    if (quadruplesTableIndex < MAX_QUADRUPLES) {
-        Quadruple* newQuadruple = &quadruplesTable[quadruplesTableIndex++];
-        newQuadruple->operator = op;
-        newQuadruple->operand1 = operand1;
-        newQuadruple->operand2 = operand2;
-        newQuadruple->result = result;
+    if (fullQuadruplesTableIndex < MAX_QUADRUPLES) {
+        //if salida append at the end
+        if (op == O_SALIDA) {
+            Quadruple* newQuadruple = &quadruplesTable[fullQuadruplesTableIndex++];
+            newQuadruple->operator = op;
+            newQuadruple->operand1 = operand1;
+            newQuadruple->operand2 = operand2;
+            newQuadruple->result = result;
+        } else {
+            //displace all salida quads
+            for (int i = fullQuadruplesTableIndex; i > quadruplesTableIndex; --i) {
+                quadruplesTable[i] = quadruplesTable[i - 1];
+            }
+            //append just before the first salida quad
+            Quadruple* newQuadruple = &quadruplesTable[quadruplesTableIndex++];
+            newQuadruple->operator = op;
+            newQuadruple->operand1 = operand1;
+            newQuadruple->operand2 = operand2;
+            newQuadruple->result = result;
+            fullQuadruplesTableIndex++;
+        } 
     } else {
         // Handle error: symbol table is full
         fprintf(stderr, "Symbol table is full\n");
@@ -105,9 +121,6 @@ void writeQuadruplesToFile(const char *filename, Quadruple *quadruplesTable, int
         perror("Error opening the file");
         return;
     }
-
-    Quadruple outputAuxTable[MAX_QUADRUPLES];
-    int outputAuxTableIndex = 0;
 
     fprintf(file, "______ALGORITMO COMPILADO______\n");
 
@@ -216,8 +229,8 @@ void writeQuadruplesToFile(const char *filename, Quadruple *quadruplesTable, int
                             symbolTable[quadruplesTable[i].result].name);
 
         } else if (quadruplesTable[i].operator == O_SALIDA) {
-            fprintf(file, "\n");
-            outputAuxTable[outputAuxTableIndex++] = quadruplesTable[i];
+            fprintf(file, "output %s\n", 
+                            symbolTable[quadruplesTable[i].result].name);
 
         } else if (quadruplesTable[i].operator == O_SI) {
             fprintf(file, "if %s goto %d\n", 
@@ -235,12 +248,6 @@ void writeQuadruplesToFile(const char *filename, Quadruple *quadruplesTable, int
                             quadruplesTable[i].operand1,
                             quadruplesTable[i].operand2,
                             quadruplesTable[i].result);
-        }
-    }
-    for (int i = 0; i < outputAuxTableIndex; ++i) {
-        if (outputAuxTable[i].operator == O_SALIDA) {
-            fprintf(file, "output %s\n", 
-                            symbolTable[outputAuxTable[i].result].name);
         }
     }
     fclose(file);
