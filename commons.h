@@ -15,7 +15,7 @@ typedef struct ListaId_T {
 }ListaId_T;
 
 typedef enum {
-    T_ENTERO = 5,
+    T_ENTERO = 0,
     T_REAL = 1,
     T_BOOLEANO = 2,
     T_CADENA = 3,
@@ -39,12 +39,6 @@ typedef enum {
     O_ITOF = 13,
     O_FTOI = 14,
     O_UMENOS = 15,
-    O_SII = 16,
-    O_SIMAYI = 17,
-    O_SIMENI = 18,
-    O_SIMAY = 19,
-    O_SIMEN = 20,
-    O_SID = 21,
     O_ASIGNACION = 22,
     O_ENTRADA = 23,
     O_SALIDA = 24,

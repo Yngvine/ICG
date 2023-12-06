@@ -131,7 +131,19 @@ OP_COMPARADOR {COMP_IGUALDAD}|{COMP_DIFERENCIA}|{COMP_MENOR_IGUAL}|{COMP_MAYOR_I
 {OP_MODULO}                     {return TK_MODULO ;}
 {OP_MULTIPLICACION}             {return TK_PRODUCTO ;}
 {OP_DIVISION}                   {return TK_ASIGNACION ;}
-{OP_COMPARADOR}                 {return TK_OPREL ;}
+
+{COMP_IGUALDAD}                 {yylval.paraNombreOperadores = O_IGUAL;
+                                 return TK_OPREL ;}
+{COMP_DIFERENCIA}               {yylval.paraNombreOperadores = O_DISTINTO;
+                                 return TK_OPREL ;}
+{COMP_MENOR_IGUAL}              {yylval.paraNombreOperadores = O_MENORI;
+                                 return TK_OPREL ;}
+{COMP_MAYOR_IGUAL}              {yylval.paraNombreOperadores = O_MAYORI;
+                                 return TK_OPREL ;}
+{COMP_MENOR}                    {yylval.paraNombreOperadores = O_MENOR;
+                                 return TK_OPREL ;}
+{COMP_MAYOR}                    {yylval.paraNombreOperadores = O_MAYOR;
+                                 return TK_OPREL ;}
 
 {ALGORITMO}                     {return TK_ALGORITMO ;}
 {FALGORITMO}                    {return TK_FALGORITMO ;}

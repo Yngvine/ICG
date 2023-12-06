@@ -151,42 +151,6 @@ void writeQuadruplesToFile(const char *filename, Quadruple *quadruplesTable, int
                             symbolTable[quadruplesTable[i].operand1].name,
                             symbolTable[quadruplesTable[i].operand2].name);
            
-        } else if (quadruplesTable[i].operator == O_MENOR) {
-            fprintf(file, "%s := %s < %s\n", 
-                            symbolTable[quadruplesTable[i].result].name, 
-                            symbolTable[quadruplesTable[i].operand1].name, 
-                            symbolTable[quadruplesTable[i].operand2].name);
-           
-        } else if (quadruplesTable[i].operator == O_MAYOR) {
-            fprintf(file, "%s := %s > %s\n", 
-                            symbolTable[quadruplesTable[i].result].name, 
-                            symbolTable[quadruplesTable[i].operand1].name, 
-                            symbolTable[quadruplesTable[i].operand2].name);
-           
-        } else if (quadruplesTable[i].operator == O_MENORI) {
-            fprintf(file, "%s := %s <= %s\n", 
-                            symbolTable[quadruplesTable[i].result].name, 
-                            symbolTable[quadruplesTable[i].operand1].name, 
-                            symbolTable[quadruplesTable[i].operand2].name);
-           
-        } else if (quadruplesTable[i].operator == O_MAYORI) {
-            fprintf(file, "%s := %s >= %s\n", 
-                            symbolTable[quadruplesTable[i].result].name, 
-                            symbolTable[quadruplesTable[i].operand1].name, 
-                            symbolTable[quadruplesTable[i].operand2].name);
-           
-        } else if (quadruplesTable[i].operator == O_IGUAL) {
-            fprintf(file, "%s := %s == %s\n", 
-                            symbolTable[quadruplesTable[i].result].name, 
-                            symbolTable[quadruplesTable[i].operand1].name, 
-                            symbolTable[quadruplesTable[i].operand2].name);
-           
-        } else if (quadruplesTable[i].operator == O_DISTINTO) {
-            fprintf(file, "%s := %s <> %s\n", 
-                            symbolTable[quadruplesTable[i].result].name, 
-                            symbolTable[quadruplesTable[i].operand1].name, 
-                            symbolTable[quadruplesTable[i].operand2].name);
-           
         } else if (quadruplesTable[i].operator == O_GOTO) {
             fprintf(file, "goto %d\n", 
                             quadruplesTable[i].result);
@@ -206,41 +170,41 @@ void writeQuadruplesToFile(const char *filename, Quadruple *quadruplesTable, int
                             symbolTable[quadruplesTable[i].result].name,
                             symbolTable[quadruplesTable[i].operand1].name);
 
-        } else if (quadruplesTable[i].operator == O_SII) {
-            fprintf(file, "if %s == %s goto %s\n", 
+        } else if (quadruplesTable[i].operator == O_IGUAL) {
+            fprintf(file, "if %s == %s goto %d\n", 
                             symbolTable[quadruplesTable[i].operand1].name,
                             symbolTable[quadruplesTable[i].operand2].name,
-                            symbolTable[quadruplesTable[i].result].name);
+                            quadruplesTable[i].result);
 
-        } else if (quadruplesTable[i].operator == O_SIMAYI) {
-            fprintf(file, "if %s >= %s goto %s\n", 
+        } else if (quadruplesTable[i].operator == O_MAYORI) {
+            fprintf(file, "if %s >= %s goto %d\n", 
                             symbolTable[quadruplesTable[i].operand1].name,
                             symbolTable[quadruplesTable[i].operand2].name,
-                            symbolTable[quadruplesTable[i].result].name);
+                            quadruplesTable[i].result);
 
-        } else if (quadruplesTable[i].operator == O_SIMENI) {
-            fprintf(file, "if %s <= %s goto %s\n", 
+        } else if (quadruplesTable[i].operator == O_MENORI) {
+            fprintf(file, "if %s <= %s goto %d\n", 
                             symbolTable[quadruplesTable[i].operand1].name,
                             symbolTable[quadruplesTable[i].operand2].name,
-                            symbolTable[quadruplesTable[i].result].name);
+                            quadruplesTable[i].result);
 
-        } else if (quadruplesTable[i].operator == O_SIMAY) {
-            fprintf(file, "if %s > %s goto %s\n", 
+        } else if (quadruplesTable[i].operator == O_MAYOR) {
+            fprintf(file, "if %s > %s goto %d\n", 
                             symbolTable[quadruplesTable[i].operand1].name,
                             symbolTable[quadruplesTable[i].operand2].name,
-                            symbolTable[quadruplesTable[i].result].name);
+                            quadruplesTable[i].result);
 
-        } else if (quadruplesTable[i].operator == O_SIMEN) {
-            fprintf(file, "if %s < %s goto %s\n", 
+        } else if (quadruplesTable[i].operator == O_MENOR) {
+            fprintf(file, "if %s < %s goto %d\n", 
                             symbolTable[quadruplesTable[i].operand1].name,
                             symbolTable[quadruplesTable[i].operand2].name,
-                            symbolTable[quadruplesTable[i].result].name);
+                            quadruplesTable[i].result);
 
-        } else if (quadruplesTable[i].operator == O_SID) {
-            fprintf(file, "if %s <> %s goto %s\n", 
+        } else if (quadruplesTable[i].operator == O_DISTINTO) {
+            fprintf(file, "if %s <> %s goto %d\n", 
                             symbolTable[quadruplesTable[i].operand1].name,
                             symbolTable[quadruplesTable[i].operand2].name,
-                            symbolTable[quadruplesTable[i].result].name);
+                            quadruplesTable[i].result);
 
         } else if (quadruplesTable[i].operator == O_ASIGNACION) {
             fprintf(file, "%s := %s\n", 
@@ -252,7 +216,7 @@ void writeQuadruplesToFile(const char *filename, Quadruple *quadruplesTable, int
                             symbolTable[quadruplesTable[i].result].name);
 
         } else if (quadruplesTable[i].operator == O_SALIDA) {
-            printf("\n");
+            fprintf(file, "\n");
             outputAuxTable[outputAuxTableIndex++] = quadruplesTable[i];
 
         } else if (quadruplesTable[i].operator == O_SI) {
@@ -272,11 +236,6 @@ void writeQuadruplesToFile(const char *filename, Quadruple *quadruplesTable, int
                             quadruplesTable[i].operand2,
                             quadruplesTable[i].result);
         }
-        fprintf(file, "%d %d %d %d\n", 
-                            quadruplesTable[i].operator,
-                            quadruplesTable[i].operand1,
-                            quadruplesTable[i].operand2,
-                            quadruplesTable[i].result);
     }
     for (int i = 0; i < outputAuxTableIndex; ++i) {
         if (outputAuxTable[i].operator == O_SALIDA) {

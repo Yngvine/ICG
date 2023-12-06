@@ -17,6 +17,7 @@ extern FILE* yyin;
         int paraEntero;
         float paraReal;
         NombreTipo paraNombreTipo;
+        NombreOperadores paraNombreOperadores;
         Booleano paraBooleano;
         emanem paraEmanem;
 }
@@ -45,7 +46,8 @@ extern FILE* yyin;
 %precedence UMENOS
 %left TK_PRODUCTO TK_DIVISION TK_MODULO TK_DIV 
 
-%token TK_LITERAL_NUMERICO TK_OPREL TK_APERTURA_PARENTESIS TK_CIERRE_PARENTESIS TK_O TK_Y TK_VERDADERO TK_FALSO
+%token TK_LITERAL_NUMERICO TK_APERTURA_PARENTESIS TK_CIERRE_PARENTESIS TK_O TK_Y TK_VERDADERO TK_FALSO
+%token<paraNombreOperadores> TK_OPREL
 %token TK_LITERAL_CADENA TK_LITERAL_BOOLEANO
 %nonassoc TK_OPREL
 %left  TK_O TK_Y 
@@ -340,7 +342,7 @@ exp_b: exp_b TK_Y M exp_b{
      | operando_b{
         $$.TRUE = makeList(nextquad());
         $$.FALSE = makeList(nextquad()+1);
-        gen(O_SII, lookup_symbol_idx($1), -2, -1);//-2=true
+        gen(O_IGUAL, lookup_symbol_idx($1), -2, -1);//-2=true
         gen(O_GOTO, -1, -1, -1);
         }
      | TK_VERDADERO{;} //Literales
@@ -348,19 +350,7 @@ exp_b: exp_b TK_Y M exp_b{
      | expresion TK_OPREL expresion{
         $$.TRUE = makeList(nextquad());
         $$.FALSE = makeList(nextquad()+1);
-        if (TK_OPREL == O_MENOR) {
-                gen(O_SIMEN, lookup_symbol_idx($1), lookup_symbol_idx($3), -1);
-        } else if (TK_OPREL == O_MAYOR) {
-                gen(O_SIMAY, lookup_symbol_idx($1), lookup_symbol_idx($3), -1);
-        } else if (TK_OPREL == O_MENORI) {
-                gen(O_SIMENI, lookup_symbol_idx($1), lookup_symbol_idx($3), -1);
-        } else if (TK_OPREL == O_MAYORI) {
-                gen(O_SIMAYI, lookup_symbol_idx($1), lookup_symbol_idx($3), -1);
-        } else if (TK_OPREL == O_IGUAL) {
-                gen(O_SII, lookup_symbol_idx($1), lookup_symbol_idx($3), -1);
-        } else if (TK_OPREL == O_DISTINTO) {
-                gen(O_SID, lookup_symbol_idx($1), lookup_symbol_idx($3), -1);
-        }
+        gen($2, lookup_symbol_idx($1), lookup_symbol_idx($3), -1);
         gen(O_GOTO, -1, -1, -1);
      }
      | TK_APERTURA_PARENTESIS exp_b TK_CIERRE_PARENTESIS{
@@ -422,23 +412,16 @@ iteracion: it_cota_fija{$$ = $1;}
 
 it_cota_exp: TK_MIENTRAS M exp_b TK_HACER M instrucciones TK_FMIENTRAS
         {
-                printf("it_cota_exp\n");
                 backpatch($3.TRUE, $5.quad);
-                printf("it_cota_exp if1\n");
-                printf("it_cota_exp %d\n", $6.next->size);
                 if(0 != ($6.next->size)){
-                        printf("it_cota_exp if\n");
                         backpatch($6.next, $2.quad);
                 } else {
-                        printf("it_cota_exp else\n");
                         gen(O_GOTO,-1,-1, $2.quad);
                 }
-                printf("it_cota_exp fin\n");
                 $$.next = $3.FALSE;
         };
 
 it_cota_fija: TK_PARA TK_IDENTIFICADOR TK_ASIGNACION expresion TK_HASTA expresion N TK_HACER M instrucciones TK_FPARA{
-            printf("it_cota_fija\n");
             backpatch($10.next,nextquad());
             SymbolEntry* t = newTemp();
             gen(O_INCREMENTO, lookup_symbol_idx(lookup_symbol($2)), -1, lookup_symbol_idx(t));
@@ -446,7 +429,7 @@ it_cota_fija: TK_PARA TK_IDENTIFICADOR TK_ASIGNACION expresion TK_HASTA expresio
             gen(O_GOTO, -1, -1, nextquad()+2);
             gen(TK_ASIGNACION,  lookup_symbol_idx(lookup_symbol($2)), -1, lookup_symbol_idx($4));
             backpatch($7.next, nextquad());
-            gen(O_SIMEN, lookup_symbol_idx(lookup_symbol($2)), lookup_symbol_idx($6), $9.quad);
+            gen(O_MENOR, lookup_symbol_idx(lookup_symbol($2)), lookup_symbol_idx($6), $9.quad);
             $$.next = makeList(nextquad());
             gen(O_GOTO,-1 ,-1 ,-1);
 };
