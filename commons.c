@@ -20,6 +20,19 @@ quadList* makeList(int quadIndx) {
     return newList;
 }
 
+quadList* noneList() {
+    quadList* newList = (quadList*)malloc(sizeof(quadList));
+    if (newList == NULL) {
+        // Handle error if memory allocation fails
+        perror("Error allocating memory for the node");
+        exit(EXIT_FAILURE);
+    }
+
+    newList->size = 0;
+
+    return newList;
+}
+
 quadList* merge(quadList* l1, quadList* l2) {
     quadList* mergedList = (quadList*)malloc(sizeof(quadList));
     if (mergedList == NULL) {

@@ -63,6 +63,8 @@ typedef struct booleano{
 
 quadList* makeList(int );
 
+quadList* noneList();
+
 quadList* merge(quadList* l1, quadList* l2);
 
 

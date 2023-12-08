@@ -76,6 +76,7 @@ extern FILE* yyin;
 %type<paraEmanem> iteracion
 %type<paraEmanem> instrucciones
 %type<paraEmanem> instruccion
+%type<paraEmanem> asignacion
 %%
 
 /*Seccion algoritmos*/
@@ -374,8 +375,7 @@ operando_b: TK_IDENTIFICADOR_B{$$ = lookup_symbol($1);};
 /*Seccion instrucciones*/
 
 instrucciones: instruccion TK_SECUENCIAL instrucciones{$$ = $3;}
-             | instruccion{$$.next = makeList(nextquad());
-                           gen(O_GOTO, -1, -1, -1);}
+             | instruccion{$$=$1;}
              ;
 
 instruccion: TK_CONTINUAR{;}
@@ -396,7 +396,9 @@ asignacion: operando TK_ASIGNACION expresion
         }
         else{
                 error();
-        }}
+        }
+        $$.next = noneList();
+        }
           | operando_b TK_ASIGNACION exp_b{;}
           ;
 
@@ -413,7 +415,7 @@ iteracion: it_cota_fija{$$ = $1;}
 it_cota_exp: TK_MIENTRAS M exp_b TK_HACER M instrucciones TK_FMIENTRAS
         {
                 backpatch($3.TRUE, $5.quad);
-                if(0 != ($6.next->size)){
+                if(0 < ($6.next->size)){
                         backpatch($6.next, $2.quad);
                 } else {
                         gen(O_GOTO,-1,-1, $2.quad);
