@@ -344,14 +344,8 @@ exp_b: exp_b TK_Y M exp_b{
         backpatch($1.TRUE, $3.quad);
         $$.FALSE = merge($1.FALSE, $4.FALSE);
         //print false list
-        for (int i = 0; i < $$.FALSE->size; i++) {
-                printf("FALSE$$: %d\n", $$.FALSE->quads[i]);
-        }
         $$.TRUE = $4.TRUE;
-        for (int i = 0; i < $$.TRUE->size; i++) {
-                printf("TRUE$$: %d\n", $$.TRUE->quads[i]);
-        }
-        
+     
      } 
      | exp_b TK_O M exp_b{
         backpatch($1.FALSE, $3.quad);
@@ -420,12 +414,6 @@ asignacion: operando TK_ASIGNACION expresion
         }
           | operando_b TK_ASIGNACION exp_b{
                 //print true and false lists
-                for (int i = 0; i < $3.TRUE->size; i++) {
-                        printf("TRUE: %d\n", $3.TRUE->quads[i]);
-                }
-                for (int i = 0; i < $3.FALSE->size; i++) {
-                        printf("FALSE: %d\n", $3.FALSE->quads[i]);
-                }
                 backpatch($3.TRUE, nextquad());
                 gen(O_ASIGNACION_TRUE, -1, -1, lookup_symbol_idx($1));
                 gen(O_GOTO, -1, -1, nextquad()+2);
