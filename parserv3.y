@@ -158,7 +158,17 @@ lista_id: TK_IDENTIFICADOR TK_SEPARADOR lista_id
                 anhadir_a_lista_id($1, &$3);
                 $$ = $3;
         }
+        | TK_IDENTIFICADOR_B TK_SEPARADOR lista_id
+        {
+                anhadir_a_lista_id($1, &$3);
+                $$ = $3;
+        }
         | TK_IDENTIFICADOR 
+        {
+                inicializar_lista_id(&$$);
+                anhadir_a_lista_id($1, &$$);
+        }
+        | TK_IDENTIFICADOR_B
         {
                 inicializar_lista_id(&$$);
                 anhadir_a_lista_id($1, &$$);
@@ -324,17 +334,30 @@ exp_a: exp_a TK_SUMA exp_a{
      ;
 
 
-
+M:{$$.quad = nextquad(); };
+N:{
+        $$.next = makeList(nextquad());
+        gen(O_GOTO, -1, -1, -1);
+ };
  
 exp_b: exp_b TK_Y M exp_b{
+        backpatch($1.TRUE, $3.quad);
+        $$.FALSE = merge($1.FALSE, $4.FALSE);
+        //print false list
+        for (int i = 0; i < $$.FALSE->size; i++) {
+                printf("FALSE$$: %d\n", $$.FALSE->quads[i]);
+        }
+        $$.TRUE = $4.TRUE;
+        for (int i = 0; i < $$.TRUE->size; i++) {
+                printf("TRUE$$: %d\n", $$.TRUE->quads[i]);
+        }
+        
+     } 
+     | exp_b TK_O M exp_b{
         backpatch($1.FALSE, $3.quad);
         $$.TRUE = merge($1.TRUE, $4.TRUE);
         $$.FALSE = $4.FALSE;
-     } 
-     | exp_b TK_O M exp_b{
-        backpatch($1.TRUE, $3.quad);
-        $$.FALSE = merge($1.FALSE, $4.FALSE);
-        $$.TRUE = $4.TRUE;
+        
      }
      | TK_NO exp_b %prec NEGACION{
         $$.FALSE = $2.TRUE;
@@ -355,15 +378,11 @@ exp_b: exp_b TK_Y M exp_b{
         gen(O_GOTO, -1, -1, -1);
      }
      | TK_APERTURA_PARENTESIS exp_b TK_CIERRE_PARENTESIS{
-        $$.TRUE = makeList(nextquad());
-        $$.FALSE = makeList(nextquad()+1);
+        $$.TRUE = $2.TRUE;
+        $$.FALSE = $2.FALSE;
      }
      ;
-M:{$$.quad = nextquad(); };
-N:{
-        $$.next = makeList(nextquad());
-        gen(O_GOTO, -1, -1, -1);
- };
+
 operando: TK_IDENTIFICADOR{$$ = lookup_symbol($1);}
           | operando TK_PUNTO operando {;}
           | operando TK_INICIO_ARRAY expresion TK_FINAL_ARRAY{;}
@@ -399,7 +418,20 @@ asignacion: operando TK_ASIGNACION expresion
         }
         $$.next = noneList();
         }
-          | operando_b TK_ASIGNACION exp_b{;}
+          | operando_b TK_ASIGNACION exp_b{
+                //print true and false lists
+                for (int i = 0; i < $3.TRUE->size; i++) {
+                        printf("TRUE: %d\n", $3.TRUE->quads[i]);
+                }
+                for (int i = 0; i < $3.FALSE->size; i++) {
+                        printf("FALSE: %d\n", $3.FALSE->quads[i]);
+                }
+                backpatch($3.TRUE, nextquad());
+                gen(O_ASIGNACION_TRUE, -1, -1, lookup_symbol_idx($1));
+                gen(O_GOTO, -1, -1, nextquad()+2);
+                backpatch($3.FALSE, nextquad());
+                gen(O_ASIGNACION_FALSE, -1, -1, lookup_symbol_idx($1));
+          }
           ;
 
 alternativa: TK_SI exp_b TK_ENTONCES instrucciones lista_opciones TK_FSI{;};
@@ -419,7 +451,7 @@ it_cota_exp: TK_MIENTRAS M exp_b TK_HACER M instrucciones TK_FMIENTRAS
                         backpatch($6.next, $2.quad);
                 } else {
                         gen(O_GOTO,-1,-1, $2.quad);
-                }
+                } 
                 $$.next = $3.FALSE;
         };
 
@@ -429,8 +461,8 @@ it_cota_fija: TK_PARA TK_IDENTIFICADOR TK_ASIGNACION expresion TK_HASTA expresio
             gen(O_INCREMENTO, lookup_symbol_idx(lookup_symbol($2)), -1, lookup_symbol_idx(t));
             gen(O_ASIGNACION, lookup_symbol_idx(t), -1, lookup_symbol_idx(lookup_symbol($2)));
             gen(O_GOTO, -1, -1, nextquad()+2);
-            gen(TK_ASIGNACION,  lookup_symbol_idx(lookup_symbol($2)), -1, lookup_symbol_idx($4));
             backpatch($7.next, nextquad());
+            gen(O_ASIGNACION,  lookup_symbol_idx($4), -1, lookup_symbol_idx(lookup_symbol($2)));
             gen(O_MENOR, lookup_symbol_idx(lookup_symbol($2)), lookup_symbol_idx($6), $9.quad);
             $$.next = makeList(nextquad());
             gen(O_GOTO,-1 ,-1 ,-1);

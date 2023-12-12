@@ -241,6 +241,15 @@ void writeQuadruplesToFile(const char *filename, Quadruple *quadruplesTable, int
             fprintf(file, "%s := %s + 1\n", 
                             symbolTable[quadruplesTable[i].result].name,
                             symbolTable[quadruplesTable[i].operand1].name);
+                            
+        } else if (quadruplesTable[i].operator == O_ASIGNACION_TRUE) {
+            fprintf(file, "%s := TRUE\n", 
+                            symbolTable[quadruplesTable[i].result].name);
+
+        } else if (quadruplesTable[i].operator == O_ASIGNACION_FALSE) {
+            fprintf(file, "%s := FALSE\n", 
+                            symbolTable[quadruplesTable[i].result].name);
+
         } else {
             fprintf(file, "Unknown quadruple\n");
             fprintf(file, "%d %d %d %d\n", 

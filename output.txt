@@ -1,0 +1,80 @@
+______ALGORITMO COMPILADO______
+0: input b
+1: input a
+2: t0 := a + aux
+3: aux := t0
+4: if a < b goto -1
+5: goto -1
+6: if a > b goto 6
+7: goto -1
+8: B_y := TRUE
+9: goto 10
+10: B_y := FALSE
+11: a := b
+12: b := aux
+13: output 
+14: output a
+______ALGORITMO COMPILADO______
+0: input b
+1: input a
+2: t0 := a + aux
+3: aux := t0
+4: if a < b goto -1
+5: goto -1
+6: if a > b goto 6
+7: goto -1
+8: B_y := TRUE
+9: goto 10
+10: B_y := FALSE
+11: a := b
+12: b := aux
+13: output 
+14: output a
+______ALGORITMO COMPILADO______
+0: input b
+1: input a
+2: t0 := a + aux
+3: aux := t0
+4: if a < b goto -1
+5: goto -1
+6: if a > b goto 6
+7: goto -1
+8: B_y := TRUE
+9: goto 10
+10: B_y := FALSE
+11: a := b
+12: b := aux
+13: output 
+14: output a
+______ALGORITMO COMPILADO______
+0: input b
+1: input a
+2: t0 := a + aux
+3: aux := t0
+4: if a < b goto -1
+5: goto -1
+6: if a > b goto 6
+7: goto -1
+8: B_y := TRUE
+9: goto 10
+10: B_y := FALSE
+11: a := b
+12: b := aux
+13: output 
+14: output a
+______ALGORITMO COMPILADO______
+0: input b
+1: input a
+2: t0 := a + aux
+3: aux := t0
+4: if a < b goto 6
+5: goto 10
+6: if a > b goto 8
+7: goto 10
+8: B_y := TRUE
+9: goto 11
+10: B_y := FALSE
+11: a := b
+12: b := aux
+13: output b
+14: output a

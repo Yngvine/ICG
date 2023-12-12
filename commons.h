@@ -44,6 +44,8 @@ typedef enum {
     O_SALIDA = 24,
     O_SI = 25,
     O_INCREMENTO = 26,
+    O_ASIGNACION_TRUE = 27,
+    O_ASIGNACION_FALSE = 28,
 } NombreOperadores;
 
 typedef struct quadList{
