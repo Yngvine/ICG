@@ -340,9 +340,6 @@ M:{$$.quad = nextquad(); };
 N:{
         $$.next = makeList(nextquad());
         gen(O_GOTO, -1, -1, -1);
-        for (int i = 0; i < $$.next->size; i++) {
-                printf("N: %d\n", $$.next->quads[i]);
-        }
  };
  
 exp_b: exp_b TK_Y M exp_b{
@@ -436,11 +433,7 @@ lista_opciones: TK_SINO exp_b TK_ENTONCES M instrucciones N M lista_opciones{
                         backpatch($2.TRUE, $4.quad);
                         backpatch($2.FALSE, $7.quad);
                         $$.next = merge($6.next, $8.next);}
-              | {$$.next = makeList(nextquad());
-                gen(O_GOTO, -1, -1, -1);
-                for (int i = 0; i < $$.next->size; i++) {
-                        printf("%d\n", $$.next->quads[i]);
-                }
+              | {$$.next = noneList();
                 }
               ;
 
