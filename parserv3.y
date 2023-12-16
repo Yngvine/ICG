@@ -77,6 +77,8 @@ extern FILE* yyin;
 %type<paraEmanem> instrucciones
 %type<paraEmanem> instruccion
 %type<paraEmanem> asignacion
+%type<paraEmanem> alternativa
+%type<paraEmanem> lista_opciones
 %%
 
 /*Seccion algoritmos*/
@@ -150,7 +152,7 @@ lista_d_var: lista_id TK_DEFINICION_TIPO d_tipo TK_SECUENCIAL lista_d_var
                 concatenar_lista_id(&$$, &$1);
                 concatenar_lista_id(&$$, &$5);
              }
-           | {;}
+           | {inicializar_lista_id(&$$);}
            ;
 
 lista_id: TK_IDENTIFICADOR TK_SEPARADOR lista_id
@@ -180,14 +182,14 @@ decl_ent_sal: decl_ent {;}
             ;
 
 decl_ent: TK_ENTRADA lista_d_var{
-        for (int i = 0; i < $2.size; i++) {
+        for (int i = $2.size-1; i >= 0; i--) {
                gen(O_ENTRADA, -1, -1, lookup_symbol_idx(lookup_symbol($2.ids[i]))); 
         }
         liberar_lista_id(&$2);
         };
 
 decl_salida: TK_SALIDA lista_d_var{
-        for (int i = 0; i < $2.size; i++) {
+        for (int i = $2.size-1; i >= 0; i--) {
                gen(O_SALIDA, -1, -1, lookup_symbol_idx(lookup_symbol($2.ids[i]))); 
         }
         liberar_lista_id(&$2);
@@ -338,6 +340,9 @@ M:{$$.quad = nextquad(); };
 N:{
         $$.next = makeList(nextquad());
         gen(O_GOTO, -1, -1, -1);
+        for (int i = 0; i < $$.next->size; i++) {
+                printf("N: %d\n", $$.next->quads[i]);
+        }
  };
  
 exp_b: exp_b TK_Y M exp_b{
@@ -393,7 +398,7 @@ instrucciones: instruccion TK_SECUENCIAL instrucciones{$$ = $3;}
 
 instruccion: TK_CONTINUAR{;}
            | asignacion{;}
-           | alternativa{;}
+           | alternativa{backpatch($1.next, nextquad());}
            | iteracion{backpatch($1.next, nextquad());}
            | accion_ll{;}
            ;
@@ -422,10 +427,21 @@ asignacion: operando TK_ASIGNACION expresion
           }
           ;
 
-alternativa: TK_SI exp_b TK_ENTONCES instrucciones lista_opciones TK_FSI{;};
+alternativa: TK_SI exp_b TK_ENTONCES M instrucciones N M lista_opciones TK_FSI{
+                        backpatch($2.TRUE, $4.quad);
+                        backpatch($2.FALSE, $7.quad);
+                        $$.next = merge($6.next, $8.next);};
 
-lista_opciones: TK_SINO exp_b TK_ENTONCES instrucciones lista_opciones{;}
-              | {;}
+lista_opciones: TK_SINO exp_b TK_ENTONCES M instrucciones N M lista_opciones{
+                        backpatch($2.TRUE, $4.quad);
+                        backpatch($2.FALSE, $7.quad);
+                        $$.next = merge($6.next, $8.next);}
+              | {$$.next = makeList(nextquad());
+                gen(O_GOTO, -1, -1, -1);
+                for (int i = 0; i < $$.next->size; i++) {
+                        printf("%d\n", $$.next->quads[i]);
+                }
+                }
               ;
 
 iteracion: it_cota_fija{$$ = $1;}
