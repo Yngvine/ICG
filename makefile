@@ -1,5 +1,3 @@
-a: compilarC
-	./scanner
 compilarOut: compilarBison compilarFlex compilarLexO compilarTabla compilarCommons
 	gcc parserv3.tab.c lex.yy.o tabla.o commons.o -lfl -lm
 compilarC: compilarFlex
@@ -7,7 +5,7 @@ compilarC: compilarFlex
 compilarFlex:
 	flex scanner.l
 compilarLexO:
-	 gcc -c lex.yy.c 
+	gcc -c lex.yy.c 
 compilarBison:
 	bison -d -v parserv3.y
 compilarTabla:
@@ -15,4 +13,4 @@ compilarTabla:
 compilarCommons:
 	gcc -c commons.c -o commons.o
 clear:
-	rm *.out *.yy.o *.yy.c *.output *.tab.c *.tab.h scanner *.o -f
+	rm *.out *.yy.o *.yy.c *.output *.tab.c *.tab.h scanner *.o output.txt -f

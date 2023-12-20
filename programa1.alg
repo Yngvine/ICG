@@ -5,7 +5,7 @@ sal a, b: entero;
 var
 aux: entero;
 fvar;
-aux:= a + aux;
+aux:= a +aux;
 a:= b;
 b:= aux
 {Post: b=A AND a = B}

@@ -1,31 +1,62 @@
-COMPONENTES: Igor Volodimir Vons Vons, Aitor Uranga Roldán
+###### COMPONENTES: Igor Volodimir Vons Vons, Aitor Uranga Roldán
 
-## EJECUCION ##
+## EJECUCIÓN ##
 
-Para ejecutar directamente usar el comando "make". Los archivos seran compilados y el programa ejecutado.
+Para dar como input un fichero de texto plano con el código para ser analizado, 
+primero compilar los archivos del parser usando "make compilarOut"  con lo que 
+se compilará el scanner, el parser y los dos módulos adicionales "tabla.h" (donde
+se guardan las funciones de las tablas) y "commons.h" (donde se guardan el resto
+de funciones usadas), y posteriormente ejecutar "./a.out [filename]".
 
-Para dar como input un archivo plano con el codigo para ser analizado por el scanner, primero compilar los archivos con "make compilarC" y posteriormente ejecutar "./scanner [filename]".
+El código intermedio resultante de la ejecución se almacenará en "output.txt".
+Si el archivo no existe se creará uno y se le introducirá el código, si existe
+se acoplará el nuevo código al final del contenido del archivo.
 
-Se adjuntan 3 archivos de codigo ".alg" que pueden usarse para probar el scanner.
+Adicionalmente se cuenta con "make clear" para eliminar los archivos resultados
+de la compilación, así como el archivo "output.txt" obtenido durante la ejecución
+del parser.
+
+Se adjuntan 10 archivos de código ".alg" que pueden usarse para probar el compilador.
+Se trata de código de poco sentido lógico, usado principalmente para comprobar si
+los resultados de la compilación de código intermedio se corresponden con los 
+esperados en cada ejemplo.
 
 ## APRECIACIONES ##
 
-Por el momento para diferenciar si las apariciones de '+' y '-' pegados a un entero o decimal son como operador o como parte de dicho entero o decimal, se fuerza al usuario a dejar un espacio entre ambos si se trata de un operador y quitarlo si se trata del signo.
+El camino elegido para solucionar los conflictos relacionados con diferenciar 
+las variables booleanas del resto fue el de PASCAL
+
+No se han llegado a trabajar:
+- los literales
+- las declaraciones de tipos y constantes
+- las acciones y funciones
+
+Si se han implementado: 
+- las declaraciones de variables
+- las expresiones aritméticas
+- las asignaciones
+- las expresiones booleanas
+- las iteraciones de cota fija y variables
+- los saltos condicionales
 
 ## ALGORITMOS ##
 
-programa1 : Declaracion de variables y operaciones aritmeticas
+- programa1 : Declaración de variables y operaciones aritméticas
 
-programa2 : Saltos condicinales sin acabar :)
+- programa2 : Operaciones y asignaciones booleanas
 
-programa3 : Bucle mientras 
+- programa3 : Saltos condicionales 
 
-programa4 : Bucles mientras anidados
+- programa4 : Bucle mientras 
 
-programa5 : Bucle para simple
+- programa5 : Bucles mientras anidados
 
-programa6 : Bucles para anidados
+- programa6 : Bucle para simple
 
-programa7 : Bucles mientras y paras
+- programa7 : Bucles para anidados
 
-programa8 : Operaciones y asignaciones booleanas
+- programa8 : Bucles mientras y paras
+
+- programa9 : Bucles mientras y saltos condicionales anidados
+
+- programa10: Bucles mientras, paras y saltos condicionales anidados

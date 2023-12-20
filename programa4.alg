@@ -1,4 +1,4 @@
-algoritmo sumacombelevado2;
+algoritmo sumacomb;
 ent n, m: entero;
 sal suma, comb: entero;
 {Prec: n= N AND m = M AND M >= N >0}
@@ -9,14 +9,9 @@ i:= a;
 suma:= a;
 comb:= m;
 mientras i <n hacer
-suma := suma + comb;
-comb := comb * (m - i - b) div (i + c);
-mientras i <n hacer
-suma := suma + comb;
-comb := comb * (m - i - b) div (i + c);
-i := i + b
-fmientras;
-i := i + b
+    suma := suma + comb;
+    comb := comb * (m - i - b) div (i + c);
+    i := i + b
 fmientras
 {Post: n =N AND suma = SUMATORIO(i=1..N)(M sobre i)}
 falgoritmo.

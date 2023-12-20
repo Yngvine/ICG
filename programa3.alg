@@ -1,17 +1,37 @@
-algoritmo sumacomb;
-ent n, m: entero;
-sal suma, comb: entero;
-{Prec: n= N AND m = M AND M >= N >0}
+algoritmo orden3;
+ent a, b, c: entero; sal max, min, med: entero; {Prec: a = A AND b = B AND c = C}
 var
-i, a, b, c: entero;
+B_a: booleano;
 fvar;
-i:= a;
-suma:= a;
-comb:= m;
-mientras i <n hacer
-suma := suma + comb;
-comb := comb * (m - i - b) div (i + c);
-i := i + b
-fmientras
-{Post: n =N AND suma = SUMATORIO(i=1..N)(M sobre i)}
+si a >= b y a >= c ->
+    si b >= c ->
+        med := b; 
+        min := c
+    [] b <c ->
+        med := c; 
+        min := b
+    fsi;
+    max := a
+[] b >= a y b >= c ->
+    max := b;
+    si a >= c ->
+        med := a; 
+        min := c
+    [] a <c ->
+        med := c; 
+        min := a;
+        B_a := c > b
+    fsi
+[] c >= b y c >= a ->
+    max := c;
+    si b >= a ->
+        med := b; 
+        min := a
+    [] b <a ->
+        med := a; 
+        min := b; 
+        B_a := c > b
+    fsi
+fsi
+{Post: a=A AND b = B AND c= C ...}
 falgoritmo.

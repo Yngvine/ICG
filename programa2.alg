@@ -1,37 +1,9 @@
-algoritmo orden3;
-ent a, b, c: entero; sal max, min, med: entero; {Prec: a = A AND b = B AND c = C}
-var
-B_a: booleano;
-fvar;
-si a >= b y a >= c ->
-max := a;
-    si b >= c ->
-        med := b; 
-        min := c
-    [] b <c ->
-        med := c; 
-        min := b
-    fsi
-[] b >= a y b >= c ->
-max := b;
-    si a >= c ->
-        med := a; 
-        min := c
-    [] a <c ->
-        med := c; 
-        min := a;
-        B_a := c > b
-    fsi
-[] c >= b y c >= a ->
-max := c;
-    si b >= a ->
-        med := b; 
-        min := a
-    [] b <a ->
-        med := a; 
-        min := b; 
-        B_a := c > b
-    fsi
-fsi
-{Post: a=A AND b = B AND c= C ...}
+algoritmo intercambio;
+ent a, b: entero;
+sal B_y, B_t: booleano;
+{Prec: a= A AND b = B}
+B_y := ((a<b) y (a>b));
+B_y := B_t;
+B_t := !B_y
+{Post: b=A AND a = B}
 falgoritmo.

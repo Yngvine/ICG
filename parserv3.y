@@ -362,7 +362,7 @@ exp_b: exp_b TK_Y M exp_b{
      | operando_b{
         $$.TRUE = makeList(nextquad());
         $$.FALSE = makeList(nextquad()+1);
-        gen(O_IGUAL, lookup_symbol_idx($1), -2, -1);//-2=true
+        gen(O_SI, lookup_symbol_idx($1), -2, -1);//-2=true
         gen(O_GOTO, -1, -1, -1);
         }
      | TK_VERDADERO{;} //Literales
@@ -414,7 +414,7 @@ asignacion: operando TK_ASIGNACION expresion
         }
         $$.next = noneList();
         }
-          | operando_b TK_ASIGNACION exp_b{
+          | operando_b TK_ASIGNACION exp_b{ 
                 //print true and false lists
                 backpatch($3.TRUE, nextquad());
                 gen(O_ASIGNACION_TRUE, -1, -1, lookup_symbol_idx($1));
