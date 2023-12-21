@@ -1,4 +1,4 @@
-algoritmo intercambio;
+algoritmo programa2;
 ent a, b: entero;
 sal B_y, B_t: booleano;
 {Prec: a= A AND b = B}

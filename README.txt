@@ -36,7 +36,7 @@ Si se han implementado:
 - las expresiones aritméticas
 - las asignaciones
 - las expresiones booleanas
-- las iteraciones de cota fija y variables
+- las iteraciones de cota fija y cota expresión
 - los saltos condicionales
 
 ## ALGORITMOS ##
@@ -45,18 +45,18 @@ Si se han implementado:
 
 - programa2 : Operaciones y asignaciones booleanas
 
-- programa3 : Saltos condicionales 
+- programa3 : Saltos condicionales
 
-- programa4 : Bucle mientras 
+- programa4 : Bucle mientras (cota expresión) 
 
 - programa5 : Bucles mientras anidados
 
-- programa6 : Bucle para simple
+- programa6 : Bucle para (cota fija)
 
 - programa7 : Bucles para anidados
 
-- programa8 : Bucles mientras y paras
+- programa8 : Bucle mientra y para
 
 - programa9 : Bucles mientras y saltos condicionales anidados
 
-- programa10: Bucles mientras, paras y saltos condicionales anidados
+- programa10: Bucles mientras, para y saltos condicionales anidados

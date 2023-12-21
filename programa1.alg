@@ -1,4 +1,4 @@
-algoritmo intercambio;
+algoritmo programa1;
 ent a, b: entero;
 sal a, b: entero;
 {Prec: a= A AND b = B}

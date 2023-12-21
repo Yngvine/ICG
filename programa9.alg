@@ -1,4 +1,4 @@
-algoritmo sumacomb;
+algoritmo programa9;
 ent n, m: entero;
 sal suma, comb: entero;
 {Prec: n= N AND m = M AND M >= N >0}
